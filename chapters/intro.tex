@@ -3,6 +3,31 @@
 \section{Introduction}
 \label{sec:introduction}
 
+Real-life applications of robotic platforms that are versatile enough to navigate autonomously necessitate from the following main modules:
+control, path-planning, state-estimation, and perception.
+
+In order to have high-fidelity simulations to test algorithmic implementations of such modules, we need to accurately simulate the dynamics of the robot, as well as the exteroceptive and propioceptive sensors it has.
+A simulator that is extensively used by experienced roboticists to this purpose is Gazebo \TODO{cite}.
+The latest release of Gazebo provides highly accurate physics engine capable of computing collisions and body dynamics.
+Coupled with specialized third-party software for particular robotic platforms, Gazebo is a powerful tool that is the backbone of robot simulation in ROS, the Robotic Operating System.
+
+Moreover, Gazebo allows for simulation of sensors such as: \TODO{add}, and in particular cameras.
+Nevertheless, as many experienced roboticists might have noticed already, Gazebo lacks high-fidelity image rendering, therefore making the simulator not usable for computer vision algorithms that necessitate realistic images.
+
+Other simulators, such as AirSim \TODO{cite}, developped by Microsoft, provide both the dynamics and the photo-realistic renderings that we need.
+Nevertheless, its integration with ROS is in a very early stage, and must practitioners might find its installation and architecture inadequate for fast development (for now).
+Hopefully, in the next years, an up-to-date integration with ROS will happen and allow many more to use AirSim's simulator.
+AirSim achieves realistic renderings by making use of game development engines that are highly optimized to develop realistic simulated environments.
+
+Therefore, roboticists are usually faced with two choices: either go for a photo-realistic approach, like AirSim's one, despite a fragile ROS integration, or use the decades long integration of Gazebo with ROS
+at the expense of realistic renderings.
+For a full-stack roboticist this means developing with AirSim when building state-estimation and perception modules, while switching to Gazebo for control and path-planning development for high-fidelity dynamics and fast development with ROS.
+
+In this work, we propose to use Gazebo coupled with a photo-realistic rendering game engine such as Unity to allow for the development of full-stack robotic platforms with control/path-planning and state-estimation/perception algorithms.
+In particular, we will use the newly released software FlightGoggles, which uses the Unity game engine as the backbone for photo-realistic rendering while providing a ROS-Unity bridge that is simple and well-integrated with ROS.
+
+Figure \TODO{...} provides an overview of the different modules used in this work.
+
 % Close look at wall
 \begin{figure}[t]
   \centering

@@ -1,5 +1,11 @@
 %!TEX root = ../main.tex
 \begin{abstract}
+    We present a suite of algorithms and simulators with open-source implementations suitable for general Robotics development.
+    As robotics is starting to have an increasingly important role with applications such as drone delivery and autonomous cars, it is ever more important to test, refine and provide a proof-of-concept of our algorithmic designs in a fast yet reliable way.
+    With the advent of powerful desktop computers with multiple graphic cards and high-performance processors, we have the possibility to accurately simulate worlds that are always closer to being indistinguishable from the real world.
+    Although we still have not reach the level where one might discard completely a real-life demonstration for the sake of proving the validity of a system, we are getting there at an exponential pace.
+    Soon we might reach the point where we will have difficulties to decide what is real from what is computer-generated. If the reader is not convinced that this will happen, we suggest checking the latest developments in Generative Adversarial Networks \TODO{cite}.
+
     Classical implementations of Visual-Inertial Odometry (VIO) algorithms ignore semantic information of the scene, as they rely solely on sparse landmarks.
     Nevertheless, recent work has shown the advantage of using richer representations of the scene, such as 3D meshes, to extract higher-level information such as structural regularities.
     In this work, we show that a 3D mesh of the scene can be further utilized to accommodate semantic information, which enhances the mapping side of a classical VIO beyond a sparse and uninformative point-cloud.
