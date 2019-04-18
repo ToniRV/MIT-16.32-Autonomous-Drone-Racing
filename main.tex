@@ -1,0 +1,185 @@
+\documentclass[letterpaper, 10 pt, journal, twoside]{IEEEtran}  % Use this command for final RAL version
+%\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4 paper
+
+\IEEEoverridecommandlockouts                              % This command is only needed if
+                                                          % you want to use the \thanks command
+
+%\overrideIEEEmargins % Needed to meet printer requirements.
+
+\usepackage{mathtools} 
+\usepackage{graphicx,subcaption} % to use subfigure
+\graphicspath{{img/}}
+% To import svg, and automatic workflow with inkscape.
+% But including svg also includes subfig which seems to collide with subfigure
+% This gives the error main.tex|143 error| Undefined control sequence. \sf@counterlist
+% Just remove deprecated subfigure, and use subcaptions instead...
+%\usepackage[svgpath=img/]{svg}
+% To import pgf figures.
+\usepackage{pgf}
+% To use svgscale before calling input on a pdf_tex file or svg
+\usepackage{calc}
+% To solve the issue of relative paths inside pgf.
+\newcommand\inputpgf[2]{{
+\let\pgfimageWithoutPath\pgfimage
+\renewcommand{\pgfimage}[2][]{\pgfimageWithoutPath[##1]{#1/##2}}
+\input{#1/#2}
+}}
+
+\usepackage{todonotes}
+%\global\long\def\todoblue#1{\todo[inline,backgroundcolor=cyan]{#1}}
+%\global\long\def\todogreen#1{\todo[inline,backgroundcolor=green]{#1}}
+\usepackage{soul}
+
+% To solve a bug with titlesec, and with makeidx
+\usepackage{etoolbox}
+
+\usepackage{amsmath} % To get math functionality
+% Use amsmath to create my own definition equality symbol
+\newcommand\defeq{\mathrel{\overset{\makebox[0pt]{\mbox{\tiny def}}}{=}}}
+\usepackage{amssymb} % For nice math symbols
+\usepackage{bm} % Better than \boldsymbol, use \bm
+\usepackage[export]{adjustbox}% http://ctan.org/pkg/adjustbox
+% To add tables with even width
+\usepackage{tabularx}
+\newcolumntype{Y}{>{\centering\arraybackslash}X} % To make columns content centered
+\usepackage{tikz} % To draw
+\usetikzlibrary{bayesnet} % To draw factor graphs in latex.
+
+% Set variables for factor graph distances.
+\newlength{\state} % Edge distance btw states
+\setlength{\state}{1cm}
+
+% For URLs
+\usepackage{url}
+% For mulicolumn
+\usepackage{array}
+% For copyright letters
+\usepackage{textcomp}
+% To avoid commands ignoring space after
+\usepackage{xspace}
+% To do nice minimalistic tables
+% and better spacing above and below the various rules in the table
+\usepackage{booktabs}
+% To have footnotes in tables
+\usepackage{tablefootnote}
+% To allow for letters in enumerate (i, ii, ...)
+\usepackage[shortlabels]{enumitem}
+
+% For links
+\usepackage{hyperref}
+% Nice links and urls
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+% Cleverer referencing
+% Hyperref must be set before cleveref or cref won't work
+\usepackage{cleveref}
+%\crefformat{section}{\S#2#1#3} % Change section word for symbol
+%\crefformat{subsection}{\S#2#1#3}
+%\crefformat{subsubsection}{\S#2#1#3}
+
+% Increase secnumdepth to also be able to reference paragraphs
+\setcounter{secnumdepth}{6}
+
+% For citations to be ordered
+\usepackage[sort]{cite} % sorting is default actually
+
+% useful comments
+\usepackage{color}
+\newcommand{\Rebuttal}[1]{\textcolor{black}{#1}}
+\definecolor{orange}{RGB}{255,127,0}
+\newcommand{\TR}[1]{\textcolor{orange}{{\\ \bf TR:}~#1}\\}
+\newcommand{\LC}[1]{\textcolor{red}{{\bf LC:}~#1}}
+
+% COLORS
+\newcommand{\blue}[1]{{\color{blue}#1}}
+\newcommand{\green}[1]{{\color{green}#1}}
+\newcommand{\red}[1]{{\color{red}#1}}
+
+% TO MANAGE REFERENCES
+%============================================================================
+\newcommand{\linkToPdf}[1]{\href{#1}{\blue{(pdf)}}}
+\newcommand{\linkToPpt}[1]{\href{#1}{\blue{(ppt)}}}
+\newcommand{\linkToCode}[1]{\href{#1}{\blue{(code)}}}
+\newcommand{\linkToWeb}[1]{\href{#1}{\blue{(web)}}}
+\newcommand{\linkToVideo}[1]{\href{#1}{\blue{(video)}}}
+\newcommand{\award}[1]{\xspace} % {{\red{#1}}} % omit awards
+
+\newcommand{\mysubsection}[1]{{\bf#1.}} % \subsection{}
+
+%\title{
+%Densifying Sparse VIO \\ A mesh-based approach using structural regularities
+%}
+\title{Semantic 3D Mesh VIO}
+
+% Paper headers
+\markboth{IEEE Intelligent Robots and Systems. Preprint Version.}
+{Rosinol \MakeLowercase{\textit{et al.}}: Semantic 3D Mesh VIO}
+% Use only for final RAL version
+
+\author{Antoni Rosinol$^{1}$, Siyi Hu$^{1}$, Luca Carlone$^{1}$
+\thanks{$^{1}$A.\,Rosinol, S.\,Hu and L.\,Carlone are with the Laboratory for
+Information \& Decision Systems (LIDS), Massachusetts Institute of Technology, Cambridge, MA, USA,
+{\sf \{arosinol,siyihu,lcarlone\}@mit.edu}}
+\thanks{This work was partially funded by ARL DCIST CRA W911NF-17-2-0181.}}%
+
+%\thanks{Manuscript received: September, 10, 2017; Revised December, 2, 2017; Accepted December, 4, 2017.} %Use only for final RAL version
+%Use only for final RAL version.
+
+\newcommand{\TODO}[1]{
+\textcolor{orange}{{\textbf{TODO:}}~#1} % Comment this line to remove TODOs
+}
+
+\input{./chapters/shortcuts} % Shortcuts used by Forster15icra.
+
+\begin{document}
+
+\LC{add: ``Probabilistic Structure from Motion with Objects (PSfMO)''}
+\LC{add: ``ObjectFusion: An Object Detection and Segmentation framework with RGB-D SLAM and Convolutional Neural Networks
+G Tian, L Liu, JH Ri, Y Liu, Y Sun - Neurocomputing, 2019''}
+\LC{add: [PDF] GEN-SLAM: Generative Modeling for Monocular Simultaneous Localization and Mapping
+P Chakravarty, P Narayanan, T Roussel - arXiv preprint arXiv:1902.02086, 2019}
+
+\LC{add: [PDF] GEOMetrics: Exploiting Geometric Structure for Graph-Encoded Objects
+EJ Smith, S Fujimoto, A Romero, D Meger - arXiv preprint arXiv:1901.11461, 2019}
+
+\LC{Mesh Based Semantic Modelling for Indoor and Outdoor Scenes
+Julien P. C. Valentin1,3 Sunando Sengupta1,3 Jonathan Warrell1 Ali Shahrokni2 Philip H. S. Torr1}
+
+\LC{work from Soatto}
+
+\LC{https://journals.sagepub.com/doi/abs/10.1177/0278364919839761}
+
+\maketitle
+%\thispagestyle{empty}
+%\pagestyle{empty}
+
+\input{chapters/abstract.tex}
+\input{chapters/intro.tex}
+\input{chapters/related_work.tex}
+\input{chapters/regular_vio.tex}
+\input{chapters/evaluation.tex}
+\input{chapters/conclusion.tex}
+
+%\addtolength{\textheight}{-11cm}   % This command serves to balance the column lengths
+                                  % on the last page of the document manually. It shortens
+                                  % the textheight of the last page by a suitable amount.
+                                  % This command does not take effect until the next page
+                                  % so it should come on the page before the last. Make
+                                  % sure that you do not shorten the textheight too much.
+
+
+%\section*{Acknowledgments}
+
+\bibliographystyle{IEEEtran} % use IEEEtran.bst style
+\bibliography{bibliography}
+
+%\addtolength{\textheight}{0cm}   % This command serves to balance the column lengths
+%\newpage
+%\input{./chapters/appendix_content.tex}
+
+\end{document}

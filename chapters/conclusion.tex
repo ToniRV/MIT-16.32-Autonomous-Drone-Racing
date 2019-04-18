@@ -1,0 +1,23 @@
+%!TEX root = ../main.tex
+
+\section{Conclusion}
+\label{sec:conclusions}
+
+In this paper, we have shown a VIO algorithm capable of building a 3D mesh of the scene without relying on extra regularization steps, but instead enforcing structural constraints extracted from the mesh.
+We have also presented a way to incrementally build a 3D mesh while restricting it to the time-horizon of the optimization problem.
+Therefore, the mesh spans multiple viewpoints, thereby covering an extended area; yet the size of the mesh remains bounded, allowing for real-time operation.
+
+After evaluation of our approach, we have seen that enforcing co-planarity constraints between landmarks provides more accurate state \TODO{and mesh estimates} than simply ignoring these structural regularities.
+In particular, the state estimation improves its global consistency by 26\% (Absolute Translation Error), while its local consistency improves by up to 50\% (Relative Position Error in translation), in scenes with structural regularities.
+ Moreover, our proposed VIO algorithm surpasses in localization accuracy the state-of-the-art in scenes exhibiting structural regularities.
+We also show that structural constraints improve the accuracy of the mesh by up to 7\%.
+
+Finally, while the results are promising, we are not yet enforcing higher level regularities (such as parallelism or orthogonality) between planes.
+Therefore, these improvements could be even larger, potentially rivaling pipelines enforcing loop-closures.
+%Moreover, in the limit, the 3D mesh would achieve a quality similar to the meshes used in computer graphics.
+%To achieve this, an approach could be to incrementally build the 3D mesh such that its manifold property is preserved, for example by using the work of \cite{} \TODO{cite}.
+
+%We have hence confirmed, in real experiments, the conclusions drawn by previous authors \cite{Henein2017iros} about the benefits of using structural regularities.
+%We have also implemented, to the best of our knowledge, the first VIO pipeline to use Structureless \cite{Carlone14icra} and Projection factors (both monocular and stereo) simultaneously.
+%And hence the first to also show the benefits of using Structureless, Projection and Regularity factors in the same optimization problem.
+
