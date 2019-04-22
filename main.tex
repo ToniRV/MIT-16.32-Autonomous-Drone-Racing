@@ -114,18 +114,17 @@
 %\title{
 %Densifying Sparse VIO \\ A mesh-based approach using structural regularities
 %}
-\title{Semantic 3D Mesh VIO}
+\title{Optimal Control and Trajectory Estimation of Nonlinear Quadrotor}
 
 % Paper headers
 \markboth{IEEE Intelligent Robots and Systems. Preprint Version.}
 {Rosinol \MakeLowercase{\textit{et al.}}: Semantic 3D Mesh VIO}
 % Use only for final RAL version
 
-\author{Antoni Rosinol$^{1}$, Siyi Hu$^{1}$, Luca Carlone$^{1}$
-\thanks{$^{1}$A.\,Rosinol, S.\,Hu and L.\,Carlone are with the Laboratory for
-Information \& Decision Systems (LIDS), Massachusetts Institute of Technology, Cambridge, MA, USA,
-{\sf \{arosinol,siyihu,lcarlone\}@mit.edu}}
-\thanks{This work was partially funded by ARL DCIST CRA W911NF-17-2-0181.}}%
+\author{Antoni Rosinol$^{1}$
+\thanks{$^{1}$A.\,Rosinol is with the Laboratory for Information \& Decision Systems (LIDS), Massachusetts Institute of Technology, Cambridge, MA, USA,
+
+\sf arosinol@mit.edu}}
 
 %\thanks{Manuscript received: September, 10, 2017; Revised December, 2, 2017; Accepted December, 4, 2017.} %Use only for final RAL version
 %Use only for final RAL version.
@@ -138,22 +137,6 @@ Information \& Decision Systems (LIDS), Massachusetts Institute of Technology, C
 
 \begin{document}
 
-\LC{add: ``Probabilistic Structure from Motion with Objects (PSfMO)''}
-\LC{add: ``ObjectFusion: An Object Detection and Segmentation framework with RGB-D SLAM and Convolutional Neural Networks
-G Tian, L Liu, JH Ri, Y Liu, Y Sun - Neurocomputing, 2019''}
-\LC{add: [PDF] GEN-SLAM: Generative Modeling for Monocular Simultaneous Localization and Mapping
-P Chakravarty, P Narayanan, T Roussel - arXiv preprint arXiv:1902.02086, 2019}
-
-\LC{add: [PDF] GEOMetrics: Exploiting Geometric Structure for Graph-Encoded Objects
-EJ Smith, S Fujimoto, A Romero, D Meger - arXiv preprint arXiv:1901.11461, 2019}
-
-\LC{Mesh Based Semantic Modelling for Indoor and Outdoor Scenes
-Julien P. C. Valentin1,3 Sunando Sengupta1,3 Jonathan Warrell1 Ali Shahrokni2 Philip H. S. Torr1}
-
-\LC{work from Soatto}
-
-\LC{https://journals.sagepub.com/doi/abs/10.1177/0278364919839761}
-
 \maketitle
 %\thispagestyle{empty}
 %\pagestyle{empty}
@@ -161,7 +144,7 @@ Julien P. C. Valentin1,3 Sunando Sengupta1,3 Jonathan Warrell1 Ali Shahrokni2 Ph
 \input{chapters/abstract.tex}
 \input{chapters/intro.tex}
 \input{chapters/related_work.tex}
-\input{chapters/regular_vio.tex}
+\input{chapters/approach.tex}
 \input{chapters/evaluation.tex}
 \input{chapters/conclusion.tex}
 
@@ -175,8 +158,8 @@ Julien P. C. Valentin1,3 Sunando Sengupta1,3 Jonathan Warrell1 Ali Shahrokni2 Ph
 
 %\section*{Acknowledgments}
 
-\bibliographystyle{IEEEtran} % use IEEEtran.bst style
-\bibliography{bibliography}
+%\bibliographystyle{IEEEtran} % use IEEEtran.bst style
+%\bibliography{bibliography}
 
 %\addtolength{\textheight}{0cm}   % This command serves to balance the column lengths
 %\newpage

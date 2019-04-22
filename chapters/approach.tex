@@ -1,0 +1,36 @@
+%!TEX root = ../main.tex
+
+\section{Approach}
+\label{sec:mathematical_formulation}
+
+The minimum time optimal control problem can be generically formulated as follows:
+
+\textbf{Cost}: $$J=\int_{t_{0}}^{t_{f}} d t$$
+
+\textbf{Nonlinear Dynamics:} $$\dot{x}(t)= f(x(t), u(t), t)$$
+
+\textbf{Constraints:} 
+\begin{itemize}
+  \item Input constraints:
+    $$M_{i}^{-} \leq u_{i}(t) \leq M_{i}^{+}$$
+  \item Path constraints:
+  $\forall t, t_{0} \leq t \leq t_{f}$ 
+  $$c(x(t), u(t), t) \leq 0,$$
+\end{itemize}
+
+\textbf{Boundary Conditions:}
+Given 
+\begin{itemize}
+  \item Initial: $n(x(t_{0}), t_{0}) = 0$
+  \item Final: $m(x(t_{f}), t_{f}) = 0$
+\end{itemize}
+
+\textbf{Transversality Condition:}
+
+\subsection{Front-end}
+\label{ssec:frontend}
+
+\subsubsection{Calculus of Variations}
+\label{sssec:3d_mesh_generation}
+
+\subsubsection{3D Mesh Propagation}
