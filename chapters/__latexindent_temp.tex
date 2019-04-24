@@ -1,7 +1,12 @@
- Visual-Inertial Odometry (VIO) algorithms typically rely on a point cloud representation of the scene that does not model the topology of the environment.
- A 3D mesh instead offers a richer and more complete model of the scene.
- Nevertheless, building a 3D mesh out of the sparse and noisy 3D landmarks triangulated by a VIO pipeline often results in a mesh that does not tightly fit the real scene.
-  In order to regularize the mesh, previous approaches decouple the underlying state estimation performed by VIO from the 3D mesh regularization step, and either limit the 3D mesh to the current frame~\cite{Greene17iccv,Teixeira16iros} or let the mesh grow indefinitely~\cite{Pollefeys2008ijcv,Litvinov2013bmvc}.
- We propose instead to tightly couple mesh regularization and pose estimation by detecting and enforcing \emph{structural regularities} in a novel factor-graph formulation.
- We also propose to incrementally build the mesh while restricting it to the time-horizon of the VIO optimization, allowing the mesh to cover a larger portion of the scene than a per-frame approach, while bounding its memory usage and computational complexity.
-We show that our approach achieves an accuracy improvement of 26\% on the pose estimates with respect to the state-of-the-art VIO algorithms, while simultaneously improving the accuracy of the mesh.
+$$
+\boldsymbol{\tau}_{B}=\left[ \begin{array}{c}{\tau_{\phi}} \\ {\tau_{\theta}} \\ {\tau_{\psi}}\end{array}\right]=
+\left[ \begin{array}{c}{l k\left(-\omega_{2}^{2}+\omega_{4}^{2}\right)} \\ {l k\left(-\omega_{1}^{2}+\omega_{3}^{2}\right)} \\ {\sum_{i=1}^{4} (-1)^{i+1} \tau_{M_{i}}}\end{array}\right]
+  $$
+  $$
+  =
+\left[ \begin{array}{c}
+{k \sum_{i=1}^{4} \omega_{i}^{2}} \\
+{l k\left(-\omega_{2}^{2}+\omega_{4}^{2}\right)} \\
+{l k\left(-\omega_{1}^{2}+\omega_{3}^{2}\right)} \\
+{b(\omega_{1}^{2}-\omega_{2}^{2}+\omega_{3}^{2}-\omega_{4}^{2})}\end{array}\right]
+  $$
