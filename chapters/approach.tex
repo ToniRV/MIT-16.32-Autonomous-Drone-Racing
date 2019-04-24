@@ -34,6 +34,7 @@ Attitude: pitch $\theta$, roll $\phi$, yaw $\psi$.
 $$\boldsymbol{\xi}=\left[ \begin{array}{l}{x} \\ {y} \\ {z}\end{array}\right], \quad \boldsymbol{\eta}=\left[ \begin{array}{l}{\phi} \\ {\theta} \\ {\psi}\end{array}\right]$$
 
 Linear velocities (body frame): $\boldsymbol{V}_{B}$
+
 Angular velocities (body frame): $\boldsymbol{\nu}$
 
 $$\boldsymbol{V}_{B}=\left[ \begin{array}{c}{v_{x, B}} \\ {v_{y, B}} \\ {v_{z, B}}\end{array}\right], \quad \boldsymbol{\nu}=\left[ \begin{array}{l}{p} \\ {q} \\ {r}\end{array}\right]$$
@@ -81,7 +82,7 @@ The matrix $\boldsymbol{W}_{\eta}$ is invertible if $\theta \neq(2 k-1) \phi / 2
 
   $$\boldsymbol{I}=\left[ \begin{array}{ccc}{I_{x x}} & {0} & {0} \\ {0} & {I_{y y}} & {0} \\ {0} & {0} & {I_{z z}}\end{array}\right]$$
 
-    We further have, due to symmetry, that $I_{xx}=I_{yy}$.
+    We further have that due to symmetry inertial components are equal: $I_{xx}=I_{yy}$.
 
   \item The thrust and drag of each motor is proportional to the square of the motor velocity.
   \item The propellers are considered to be rigid and therefore blade flapping is negligible
@@ -110,14 +111,14 @@ $$f_{i}=k \omega_{i}^{2}$$
 
 The combined forces of rotors create thrust $T$ in the direction of the body z-axis.
 
-$$T=\sum_{i=1}^{4} f_{i}=k \sum_{i=1}^{4} \omega_{i}^{2}, \quad \quad \boldsymbol{T}^{B}=\left[ \begin{array}{c}{0} \\ {0} \\ {T}\end{array}\right]$$
+$$T=\sum_{i=1}^{4} f_{i}=k \sum_{i=1}^{4} \omega_{i}^{2}, \quad \quad \boldsymbol{T}_{B}=\left[ \begin{array}{c}{0} \\ {0} \\ {T}\end{array}\right]$$
 
   \item The angular velocity and acceleration of the rotor also creates torque $\tau_{M_i}$ around the rotor axis: 
-  $$\tau_{M_{i}}=b \omega_{i}^{2}+I_{M} \dot{\omega}_{i}$$
+  $$I_{M} \dot{\omega}_{i} = \tau_{M_{i}} - b \omega_{i}^{2}$$
   in which the lift constant is $k,$ the drag constant is $b$ and the inertia moment of the
 rotor is $I_{M}$. 
 
-Usually the effect of $\dot{\omega}_{i}$ is considered small and thus it is omitted.
+Usually the acceleration of the rotor ($\dot{\omega}_{i}$) is considered small and thus it is omitted.
   This holds when we assume that the quadrotor is operating in stable flight and that the propellers are maintaining a constant thrust and not accelerating.
   This assumption results in the torque about the global z axis being equal to the torque due to drag.
 
@@ -140,21 +141,28 @@ where $l$ is the distance between the rotor and the center of mass of the quadco
 \end{itemize}
 
 
+\subsubsection{Translational dynamics}
 
-\subsubsection{Rotational dynamics}:
+Newton's second law: 
+$$m \ddot{\boldsymbol{\xi}}=\boldsymbol{G}+\boldsymbol{R} \boldsymbol{T}_{B}$$
+
+$$\left[ \begin{array}{c}{\ddot{x}} \\ {\ddot{y}} \\ {\ddot{z}}\end{array}\right]=-g \left[ \begin{array}{l}{0} \\ {0} \\ {1}\end{array}\right]+\frac{T}{m} \left[ \begin{array}{c}{C_{\psi} S_{\theta} C_{\phi}+S_{\psi} S_{\phi}} \\ {S_{\psi} S_{\theta} C_{\phi}-C_{\psi} S_{\phi}} \\ {C_{\theta} C_{\phi}}\end{array}\right]$$
+
+\subsubsection{Rotational dynamics}
 The rotational equations of motion are defined in the body frame so that the rotations can be computed about the quadrotor’s center and not the center of the global coordinate frame.
 
 Applying Euler's second law:
+$$\boldsymbol{I} \dot{\nu}+\boldsymbol{\nu} \times(\boldsymbol{I} \boldsymbol{\nu})+\mathbf{\Gamma}=\boldsymbol{\tau}$$
+where:
 \begin{itemize}
-  \item Angular acceleration of the inertia $\boldsymbol{I\dot{v}}$
+  \item Angular acceleration of the inertia: $\boldsymbol{I\dot{v}}$
   \item Centripetal forces: $\boldsymbol{\nu}\times(\boldsymbol{I \nu})$
   \item Gyroscopic forces: $\boldsymbol{\Gamma}$
-  \item External torque: $\boldsymbol{\tau}$
+  \item External torque: $\boldsymbol{\tau}_B$
 \end{itemize}
-$$\boldsymbol{I} \dot{\nu}+\boldsymbol{\nu} \times(\boldsymbol{I} \boldsymbol{\nu})+\mathbf{\Gamma}=\boldsymbol{\tau}$$
 
 Replacing terms by their definitions, multiplying both sides by $\boldsymbol{I}^{-1}$, and rearranging:
-$$\boldsymbol{\dot{\nu}}=\boldsymbol{I}^{-1}\left(-\left[ \begin{array}{c}{p} \\ {q} \\ {r}\end{array}\right] \times \left[ \begin{array}{c}{I_{x x} p} \\ {I_{y y} q} \\ {I_{z z} r}\end{array}\right]-I_{r} \left[ \begin{array}{c}{p} \\ {q} \\ {r}\end{array}\right] \times \left[ \begin{array}{c}{0} \\ {0} \\ {1}\end{array}\right] \omega_{\Gamma}+\boldsymbol{\tau}\right)$$
+$$\boldsymbol{\dot{\nu}}=\boldsymbol{I}^{-1}\left(-\left[ \begin{array}{c}{p} \\ {q} \\ {r}\end{array}\right] \times \left[ \begin{array}{c}{I_{x x} p} \\ {I_{y y} q} \\ {I_{z z} r}\end{array}\right]-I_{r} \left[ \begin{array}{c}{p} \\ {q} \\ {r}\end{array}\right] \times \left[ \begin{array}{c}{0} \\ {0} \\ {1}\end{array}\right] \omega_{\Gamma}+\boldsymbol{\tau}_B\right)$$
 
 $$
 \begin{array}{c}
@@ -168,23 +176,18 @@ $$
   where $\omega_\Gamma = \omega_1 - \omega_2 + \omega_3 - \omega_4$, and $I_r$ is the rotor moment of inertia.
 
 
-\textbf{Inertial Frame dynamics}:
+The angular accelerations in world frame $\ddot{\boldsymbol{\eta}}$ are given by the time derivatives of the angular velocities $\left(\dot{\boldsymbol{\eta}} = \boldsymbol{W}_{\eta}^{-1} \boldsymbol{\nu}\right)$,
 
-Newton's second law: $m \ddot{\boldsymbol{\xi}}=\boldsymbol{G}+\boldsymbol{R} \boldsymbol{T}_{B}$
+$$\ddot{\boldsymbol{\eta}}=\frac{\mathrm{d}}{\mathrm{d} t}\left(\boldsymbol{W}_{\eta}^{-1} \boldsymbol{\nu}\right) =\frac{\mathrm{d}}{\mathrm{d} t}\left(\boldsymbol{W}_{\eta}^{-1}\right) \boldsymbol{\nu}+\boldsymbol{W}_{\eta}^{-1} \dot{\boldsymbol{\nu}} = $$
 
-$$\left[ \begin{array}{c}{\ddot{x}} \\ {\ddot{y}} \\ {\ddot{z}}\end{array}\right]=-g \left[ \begin{array}{l}{0} \\ {0} \\ {1}\end{array}\right]+\frac{T}{m} \left[ \begin{array}{c}{C_{\psi} S_{\theta} C_{\phi}+S_{\psi} S_{\phi}} \\ {S_{\psi} S_{\theta} C_{\phi}-C_{\psi} S_{\phi}} \\ {C_{\theta} C_{\phi}}\end{array}\right]$$
-
-Euler's second law: $\ddot{\boldsymbol{\eta}}=\frac{\mathrm{d}}{\mathrm{d} t}\left(\boldsymbol{W}_{\eta}^{-1} \boldsymbol{\nu}\right)$ 
-$$=\frac{\mathrm{d}}{\mathrm{d} t}\left(\boldsymbol{W}_{\eta}^{-1}\right) \boldsymbol{\nu}+\boldsymbol{W}_{\eta}^{-1} \dot{\boldsymbol{\nu}} = $$
-
-$
+$$
 \begin{array}{c}
 \left[ \begin{array}{cccc}{0} & {\dot{\phi} C_{\phi} T_{\theta}+\dot{\theta} S_{\phi} / C_{\theta}^{2}} & {-\dot{\phi} S_{\phi} C_{\theta}+\dot{\theta} C_{\phi} / C_{\theta}^{2}} \\ {0} & {-\dot{\phi} S_{\phi}} & {-\dot{\phi} C_{\phi}} \\ {0} & {\dot{\phi} C_{\phi} / C_{\theta}+\dot{\phi} S_{\phi} T_{\theta} / C_{\theta}} & {-\dot{\phi} S_{\phi} / C_{\theta}+\dot{\theta} C_{\phi} T_{\theta} / C_{\theta}}\end{array}\right] \boldsymbol{\nu}
-\\ + \boldsymbol{W_{\eta}^{-1} \dot{\nu}}
+\\ + \boldsymbol{W_{\eta}^{-1}} \dot{\boldsymbol{\nu}}.
 \end{array}
-  $
+  $$
 
-Now a simplification is made by setting $[\dot{\phi} \quad \dot{\theta} \quad \dot{\psi}]^{T}=\left[ \begin{array}{lll}{p} & {q} & {r}\end{array}\right]^{T}$, which holds true for small angles of movement \cite{Sabatino}.
+At this point, it is common to do a simplification by setting $[\dot{\phi} \quad \dot{\theta} \quad \dot{\psi}]^{T}=\left[ \begin{array}{lll}{p} & {q} & {r}\end{array}\right]^{T}$, which holds true for small angles of movement \cite{Sabatino}.
 
 $\begin{aligned} \ddot{x} &=\frac{(\cos \phi \sin \theta \cos \psi+\sin \phi \sin \psi) u_{1}-K_{f x} \dot{x}}{m} \\ \ddot{y} &=\frac{(\cos \phi \sin \theta \cos \psi-\sin \phi \cos \psi) u_{1}-K_{f y} \dot{x}}{m} \\ \ddot{z} &=\frac{(\cos \phi \cos \theta) u_{1}-K_{f z} \dot{z}}{m}-g \end{aligned}$
 $\begin{aligned} \ddot{\phi} &=\frac{l\left(u_{2}-K_{l} \dot{\phi}\right)}{I_{x}} \\ \ddot{\theta} &=\frac{l\left(u_{3}-K_{l} \dot{\theta}\right)}{I_{y}} \\ \ddot{\psi} &=\frac{\left(u_{4}-K_{d} \dot{\psi}\right)}{I_{z}} \end{aligned}$
@@ -240,6 +243,7 @@ $\dot{\boldsymbol{X}}=f(\boldsymbol{X}, \boldsymbol{U}).$
 
 Or, more precisely:
 $$
+\dot{\boldsymbol{X}} = 
 \left[
 \begin{array}{c}
 \dot{x} \\
@@ -247,43 +251,62 @@ $$
 \dot{y} \\
 {}\\
 \dot{z} \\
+{}\\
+{}\\
 \ddot{x} \\
+{}\\
 \ddot{y} \\
+{}\\
 \ddot{z} \\
+{}\\
+{}\\
 \dot{\phi} \\
+{}\\
 \dot{\theta} \\
+{}\\
 \dot{\psi} \\
+{}\\
+{}\\
 \dot{p} \\
+{}\\
 \dot{q} \\
+{}\\
 \dot{r}
 \end{array}
 \right]
 =
 \left[
 \begin{array}{l}
-  w[s(\phi) s(\psi)+c(\phi) c(\psi) s(\theta)] \\-v[c(\phi) s(\psi)-c(\psi) s(\phi) s(\theta)] +u[c(\psi) c(\theta)] \\
-\\
-  v[c(\phi) c(\psi)+s(\phi) s(\psi) s(\theta)]\\-w[c(\psi) s(\phi)-c(\phi) s(\psi) s(\theta)]
-  +u[c(\theta) s(\psi)] \\
 
-  \\
-  w[c(\phi) c(\theta)]-u[s(\theta)] +v[c(\theta) s(\phi)] \\
-
-  \\
-  r v-q w-g[s(\theta)]+\frac{f_{w x}}{m}\\
-  p w-r u+g[s(\phi) c(\theta)]+\frac{f_{w y}}{m}\\
-  q u-p v+g[c(\theta) c(\phi)]+\frac{f_{w z}-f_{t}}{m}\\
-
-  p+r[c(\phi) t(\theta)]+q[s(\phi) t(\theta)] \\
-  q[c(\phi)]-r[s(\phi)] \\
-  r \frac{c(\phi)}{c(\theta)}+q \frac{s(\phi)}{c(\theta)} \\
-
+\dot{x} \\
+{}\\
+\dot{y} \\
+{}\\
+\dot{z} \\
+{}\\
+{}\\
+  -\frac{T}{m}[S_{\phi} S_{\psi}+C_{\phi} C_{\psi} S_{\theta}] \\
+{}\\
+  -\frac{T}{m}[C_{\phi} S_{\psi} S_{\theta}-C_{\psi} S_{\phi}] \\
+{}\\
+  g-\frac{T}{m}[C_{\phi} C_{\theta}] \\
+{}\\
+{}\\
+  p+r[C_{\phi} T_{\theta}]+q[S_{\phi} T_{\theta}] \\
+{}\\
+  q[C_{\phi}]-r[S_{\phi}] \\
+{}\\
+  r \frac{C_{\phi}}{C_{\theta}}+q \frac{S_{\phi}}{C_{\theta}} \\
+{}\\
+{}\\
 \frac{I_{y}-I_{z}}{I_{x}} r q+\frac{\tau_{x}+\tau_{w x}}{I_{x}} \\
+{}\\
 \frac{I_{z}-I_{x}}{I_{y}} p r+\frac{\tau_{y}+\tau_{w y}}{I_{y}} \\
+{}\\
 \frac{I_{x}-I_{y}}{I_{z}} p q+\frac{\tau_{z}+\tau_{w z}}{I_{z}}
-
 \end{array}
 \right]
+=f(\boldsymbol{X}, \boldsymbol{U})
 $$
 
 
