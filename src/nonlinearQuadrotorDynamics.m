@@ -1,4 +1,4 @@
-function nonlinearQuadrotorDynamics(State. Control)
+function nonlinearQuadrotorDynamics(State, Control)
 
 global Quad;
 

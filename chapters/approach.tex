@@ -210,7 +210,8 @@ $\begin{aligned} \ddot{\phi} &=\frac{l\left(u_{2}-K_{l} \dot{\phi}\right)}{I_{x}
   Several other aerodynamical effects could be included in the model. For example,
 dependence of thrust on angle of attack, blade flapping and airflow disruptions.
 
-  \item We ignore rotational drag forces since we assume rotational velocities to be relatively low.
+  \item We ignore rotational drag forces since we assume rotational velocities to be relatively low. Alternatively,
+   we could add the components $\boldsymbol{\tau}_{\boldsymbol{w}}=\left[ \begin{array}{lll}{\tau_{w x}} & {\tau_{w y}} & {\tau_{w z}}\end{array}\right]^{T}$ to the overall torque.
 
 \end{itemize}
 
@@ -299,11 +300,12 @@ $$
   r \frac{C_{\phi}}{C_{\theta}}+q \frac{S_{\phi}}{C_{\theta}} \\
 {}\\
 {}\\
-\frac{I_{y}-I_{z}}{I_{x}} r q+\frac{\tau_{x}+\tau_{w x}}{I_{x}} \\
+\frac{I_{y}-I_{z}}{I_{x}} r q - \frac{I_r}{I_{x}} q w_{\Gamma} +\frac{\tau_{x}}{I_{x}} \\
+\TODO{THERE IS A MISTAKE HERE the second term is it q or p}
 {}\\
-\frac{I_{z}-I_{x}}{I_{y}} p r+\frac{\tau_{y}+\tau_{w y}}{I_{y}} \\
+\frac{I_{z}-I_{x}}{I_{y}} p r + \frac{I_r}{I_{y}} p w_{\Gamma} +\frac{\tau_{y}}{I_{y}} \\
 {}\\
-\frac{I_{x}-I_{y}}{I_{z}} p q+\frac{\tau_{z}+\tau_{w z}}{I_{z}}
+\frac{I_{x}-I_{y}}{I_{z}} p q +\frac{\tau_{z}}{I_{z}}
 \end{array}
 \right]
 =f(\boldsymbol{X}, \boldsymbol{U})
