@@ -1,8 +1,4 @@
-function parametersQuad
-% This script defines and initializes the variables for the quadrotor simulator.                                  %
-
-global Quad;
-
+function Quad = parametersQuad
 %% Initialize Variables
 
 % Simulation Parameters
@@ -12,7 +8,7 @@ Quad.sim_time = 10; % Simulation time (seconds)
 Quad.counter = 1;                      % the counter that holds the time value
 
 % Plotting Variables
-Quad.t_plot = [0:Quad.Ts:Quad.sim_time-Quad.Ts];       % the time values
+Quad.t_plot = (0:Quad.Ts:Quad.sim_time-Quad.Ts);       % the time values
 Quad.Xtemp = 0;     % Temp variables used rotating and plotting quadrotor
 Quad.Ytemp = 0;     % Temp variables used rotating and plotting quadrotor
 Quad.Ztemp = 0;     % Temp variables used rotating and plotting quadrotor

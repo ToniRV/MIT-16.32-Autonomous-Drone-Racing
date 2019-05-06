@@ -1,7 +1,11 @@
 %---------------------------------------------%
-% BEGIN: function minCurve.m %
+% BEGIN: function continuous.m %
 %---------------------------------------------%
 function phaseout = continuous(input)
+
+for p = 1:3
+    
+end
 % PHASE 1
 v                 = input.phase(1).state(:,2);
 u                 = input.phase(1).control;
