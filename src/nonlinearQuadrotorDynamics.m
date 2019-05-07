@@ -33,7 +33,7 @@ Quad.Dynamics.psi_dot   = (S_phi/C_theta) * State.q + (C_phi/C_theta) * State.r;
 % Ignoring for now the Obar because I have to solve the linear system for
 % the control inputs... This is as if Jp was 0.
 Quad.Dynamics.p_dot = (State.q*State.r*(Quad.Jy - Quad.Jz) ... %- Quad.Jp*State.q*Quad.Obar 
-+ Quad.l*Control.U2)/Quad.Jx;
++ Control.U2)/Quad.Jx;
 Quad.Dynamics.q_dot = (State.p*State.r*(Quad.Jz - Quad.Jx) ... %+ Quad.Jp*State.p*Quad.Obar 
-+ Quad.l*Control.U3)/Quad.Jy;
++ Control.U3)/Quad.Jy;
 Quad.Dynamics.r_dot = (State.p*State.q*(Quad.Jx - Quad.Jy) + Control.U4)/Quad.Jz;
