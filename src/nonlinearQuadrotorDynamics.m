@@ -18,9 +18,9 @@ Quad.Dynamics.Y_dot = State.Y_dot;
 Quad.Dynamics.Z_dot = State.Z_dot;
 
 %% Linear Accelerations
-Quad.Dynamics.X_ddot = (-(C_phi * S_theta * C_psi + S_phi * S_psi) * Control.U1 - Quad.Kdx * State.x_dot) / Quad.m;
-Quad.Dynamics.Y_ddot = (-(C_phi * S_psi * S_theta - C_psi * S_phi) * Control.U1 - Quad.Kdy * State.y_dot) / Quad.m;
-Quad.Dynamics.Z_ddot = (-(C_phi * C_theta)                         * Control.U1 - Quad.Kdz * State.z_dot) / Quad.m + Quad.g;
+Quad.Dynamics.X_ddot = (-(C_phi * S_theta * C_psi + S_phi * S_psi) * Control.U1 - Quad.Kdx * State.X_dot) / Quad.m;
+Quad.Dynamics.Y_ddot = (-(C_phi * S_psi * S_theta - C_psi * S_phi) * Control.U1 - Quad.Kdy * State.Y_dot) / Quad.m;
+Quad.Dynamics.Z_ddot = (-(C_phi * C_theta)                         * Control.U1 - Quad.Kdz * State.Z_dot) / Quad.m + Quad.g;
 
 %% Angular Velocities.
 % World frame.

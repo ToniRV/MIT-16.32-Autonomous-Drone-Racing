@@ -1,14 +1,15 @@
-function Quad = parametersQuad
+function parametersQuad
 %% Initialize Variables
+global Quad;
 
 % Simulation Parameters
-Quad.init = 0;     % used in initilization 
+Quad.init = 0;     % used in initilization
 Quad.Ts = .01;     % Sampling time (100 Hz)
 Quad.sim_time = 10; % Simulation time (seconds)
 Quad.counter = 1;                      % the counter that holds the time value
 
 % Plotting Variables
-Quad.t_plot = (0:Quad.Ts:Quad.sim_time-Quad.Ts);       % the time values
+Quad.t_plot = [0 : Quad.Ts : Quad.sim_time - Quad.Ts];       % the time values
 Quad.Xtemp = 0;     % Temp variables used rotating and plotting quadrotor
 Quad.Ytemp = 0;     % Temp variables used rotating and plotting quadrotor
 Quad.Ztemp = 0;     % Temp variables used rotating and plotting quadrotor
@@ -32,7 +33,7 @@ Quad.Jy = .05;     % Moment of inertia about Y axis (kg-m^2)
 Quad.Jz = .24;    % Moment of inertia about Z axis (kg-m^2)
 
 % Quadrotor Sensor Paramaters
-Quad.GPS_freq = (1/Quad.Ts)/1;  
+Quad.GPS_freq = (1/Quad.Ts)/1;
 Quad.X_error = .01;  %+/- m
 Quad.Y_error = .01;  %+/- m
 Quad.Z_error = .02;  %+/- m
@@ -61,7 +62,7 @@ Quad.Jp = 0.044;     % Moment of Intertia of the rotor (kg-m^2)
 Quad.max_motor_speed = 925; % motors upper limit (rad/s)
 Quad.min_motor_speed = 0; %-1*((400)^2); % motors lower limit (can't spin in reverse)
 
-Quad.Obar = 0;     % sum of motor speeds (O1-O2+O3-O4, N-m) 
+Quad.Obar = 0;     % sum of motor speeds (O1-O2+O3-O4, N-m)
 Quad.O1 = 0;       % Front motor speed (raidans/s)
 Quad.O2 = 0;       % Right motor speed (raidans/s)
 Quad.O3 = 0;       % Rear motor speed (raidans/s)
@@ -129,7 +130,7 @@ Quad.U4 = 0;       % Torque about Z axis BF (N-m)
 
 % Control Limits (update values)
 Quad.U1_max = 43.5;   % Quad.KT*4*Quad.max_motor_speed^2
-Quad.U1_min = 0;      % 
+Quad.U1_min = 0;      %
 Quad.U2_max = 6.25;  % Quad.KT*Quad.l*Quad.max_motor_speed^2
 Quad.U2_min = -6.25; % Quad.KT*Quad.l*Quad.max_motor_speed^2
 Quad.U3_max = 6.25;  % Quad.KT*Quad.l*Quad.max_motor_speed^2
@@ -137,7 +138,7 @@ Quad.U3_min = -6.25; % Quad.KT*Quad.l*Quad.max_motor_speed^2
 Quad.U4_max = 2.25; % Quad.Kd*2*Quad.max_motor_speed^2
 Quad.U4_min = -2.25;% Quad.Kd*2*Quad.max_motor_speed^2
 
-% PID parameters
+%% PID parameters
 Quad.X_KP = .35;          % KP value in X position control
 Quad.X_KI = .25;            % KI value in X position control
 Quad.X_KD = -.35;         % KD value in X position control
@@ -154,39 +155,68 @@ Quad.Z_KD = -10/1.980;  % KD value in altitude control
 Quad.Z_KI_lim = .25;         % Error to start calculating integral term
 
 Quad.phi_KP = 4.5;      % KP value in roll control 2
-Quad.phi_KI = 0;       % KI value in roll control   1        
+Quad.phi_KI = 0;       % KI value in roll control   1
 Quad.phi_KD = 0;     % KD value in roll control  -.5
 Quad.phi_max = pi/4;   % Maximum roll angle commanded
-Quad.phi_KI_lim = 2*(2*pi/360);  % Error to start calculating integral 
+Quad.phi_KI_lim = 2*(2*pi/360);  % Error to start calculating integral
 
 Quad.theta_KP = 4.5;    % KP value in pitch control 2
 Quad.theta_KI = 0;     % KI value in pitch control 1
 Quad.theta_KD = 0;   % KD value in pitch control -.5
 Quad.theta_max = pi/4; % Maximum pitch angle commanded
-Quad.theta_KI_lim = 2*(2*pi/360);  % Error to start calculating integral 
+Quad.theta_KI_lim = 2*(2*pi/360);  % Error to start calculating integral
 
 Quad.psi_KP = 10;     % KP value in yaw control
 Quad.psi_KI = 0;     % KI value in yaw control .75
 Quad.psi_KD = 0;     % KD value in yaw control -.5
-Quad.psi_KI_lim = 8*(2*pi/360);  % Error to start calculating integral 
+Quad.psi_KI_lim = 8*(2*pi/360);  % Error to start calculating integral
 
 Quad.p_KP = 2.7;    % KP value in pitch control 2
 Quad.p_KI = 1;     % KI value in pitch control
 Quad.p_KD = -.01;   % KD value in pitch control -.5
 Quad.p_max = 50*(2*pi/360); % Maximum pitch angle commanded
-Quad.p_KI_lim = 10*(2*pi/360);  % Error to start calculating integral 
+Quad.p_KI_lim = 10*(2*pi/360);  % Error to start calculating integral
 
 Quad.q_KP = 2.7;    % KP value in pitch control
 Quad.q_KI = 1;     % KI value in pitch control
 Quad.q_KD = -.01;   % KD value in pitch control -.5
 Quad.q_max = 50*(2*pi/360); % Maximum pitch angle commanded
-Quad.q_KI_lim = 10*(2*pi/360);  % Error to start calculating integral 
+Quad.q_KI_lim = 10*(2*pi/360);  % Error to start calculating integral
 
 Quad.r_KP = 2.7;    % KP value in pitch control
 Quad.r_KI = 1;     % KI value in pitch control
 Quad.r_KD = -.01;   % KD value in pitch control
 Quad.r_max = 50*(2*pi/360); % Maximum pitch angle commanded
-Quad.r_KI_lim = 10*(2*pi/360);  % Error to start calculating integral 
+Quad.r_KI_lim = 10*(2*pi/360);  % Error to start calculating integral
+
+%% State Limits
+% Absolute Pose [m]
+Quad.X_min = -10;
+Quad.X_max = 10;
+Quad.Y_min = -10;
+Quad.Y_max = 10;
+Quad.Z_min = -10;
+Quad.Z_max = 10;
+
+% Linear Velocity [m/s]
+Quad.X_dot_min = -10;
+Quad.X_dot_max = 10;
+Quad.Y_dot_min = -10;
+Quad.Y_dot_max = 10;
+Quad.Z_dot_min = -10;
+Quad.Z_dot_max = 10;
+
+% Angular position [rad]
+Quad.phi_min = pi/2;
+Quad.phi_max = -pi/2;
+Quad.theta_min = pi/2;
+Quad.theta_max = -pi/2;
+Quad.psi_min = pi/2;
+Quad.psi_max = -pi/2;
+
+% Angular rates [rad/s]
+Quad.p_max = -Quad.p_max;
+Quad.q_min = -Quad.q_max;
+Quad.r_max = -Quad.r_max;
 
 end
-

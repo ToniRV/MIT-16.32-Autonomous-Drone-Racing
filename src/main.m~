@@ -4,59 +4,68 @@ clear all;
 close all;
 clc;
 
+% Addpaths
+addpath utilities
+
 %-------------------------------------------------------------------------%
 %------------- Provide and Set Up Quadcopter -----------------------------%
 %-------------------------------------------------------------------------%
 
 %% Initialize Variables
 global Quad;
-Quad = parametersQuad();
 
 %% Initialize the plot
 initPlot;
 plotQuadModel;
 
-Quad.State = initState;
-Quad.Control.U1 = 9.8;
+% Init quad params
+parametersQuad;
+
+% Init state
+initState;
+
+% Init control
+Quad.Control.U1 = 13.7;
 Quad.Control.U2 = 0;
-Quad.Control.U3 = 0;
+Quad.Control.U3 = 1;
 Quad.Control.U4 = 0;
 
-nonlinearQuadrotorDynamics(Quad.State, Quad.Control);
+Quad.counter = Quad.counter + 1;
 
-% Plot the Quadrotor's Position
-plot_quad
-Quad.counter;
-drawnow
+while Quad.t_plot(Quad.counter - 1) < max(Quad.t_plot)
+    % Nonlinear Dynamics given inputs and current state.
+    nonlinearQuadrotorDynamics(Quad.State, Quad.Control);
 
-Quad.Control.U1 = 9.8;
-Quad.Control.U2 = 0;
-Quad.Control.U3 = 0;
-Quad.Control.U4 = 0;
+    % Update state.
+    updateState;
+
+    if(mod(Quad.counter, 3) == 0)
+        % Plot the Quadrotor's Position.
+        plotQuad
+        drawnow
+    end
+
+    % Next timestep.
+    Quad.counter = Quad.counter + 1;
+end
 
 %-------------------------------------------------------------------------%
 %------------- Provide and Set Up All Bounds for Problem -----------------%
 %-------------------------------------------------------------------------%
-t0                              = 0;     
-%t1                              = 0.2;     
-%t2                              = 0.8;     
-tf                              = 1;
+t0                              = 0;
+%t1                              = 0.2;
+%t2                              = 0.8;
+tf                              = Quad.sim_time;
+t_tol                           = Quad.Ts;
 
-t_tol                           = 0.5;
+t_min = [t0, tf - t_tol];
+t_max = [t0, tf + t_tol];
 
-t_min = [t0, tf-t_tol];
-t_max = [t0, tf+t_tol];
+                  %x %y
+x_endpoint_min = [stateToVector(Quad.State)];
 
-                                   %x %y
-x_endpoint_min                     = [0 0.1; 
-                                     -10 -10;
-                                     -10 -10;
-                                     0.5 0.8];
-x_endpoint_max                     = [0 0.1; 
-                                    10 10;
-                                    10 10;
-                                    0.5 0.8];
-                         
+x_endpoint_max = [stateToVector(Quad.State)];
+
                                     %x %v
 xmin                            = [-10 -10;
                                    -10 -10;
@@ -65,8 +74,8 @@ xmax                            = [10 10;
                                    10 10;
                                    10 10]; % TO FIX
 
-umin                            = [0 0  0];
-umax                            = [2 3 2];
+umin                            = [Quad.U1_min Quad.U2_min Quad.U3_min Quad.U4_min];
+umax                            = [Quad.U1_max Quad.U2_max Quad.U3_max Quad.U4_max];
 
 integral_min = [-100, -100, -100];
 integral_max = [100, 100, 100];
@@ -117,21 +126,21 @@ u_max = umax(1);
 
 % PHASE 1
 p = 1;
-guess.phase(p).time    = [t0; 0.2]; 
+guess.phase(p).time    = [t0; 0.2];
 guess.phase(p).state   = [x_0; 0.05 0.45];
 guess.phase(p).control = [u_max; u_max];
 guess.phase(p).integral = 0;
 
 % PHASE 2
 p = 2;
-guess.phase(p).time    = [0.2; 0.8]; 
+guess.phase(p).time    = [0.2; 0.8];
 guess.phase(p).state   = [0.05 0.45; 0.37 0.52];
 guess.phase(p).control = [0.5; 0.5];
 guess.phase(p).integral = 1;
 
 % PHASE 3
 p = 3;
-guess.phase(p).time    = [t0; tf]; 
+guess.phase(p).time    = [t0; tf];
 guess.phase(p).state   = [0.37 0.52; x_tf];
 guess.phase(p).control = [u_max; u_max];
 guess.phase(p).integral = 1;
@@ -150,7 +159,7 @@ guess.phase(p).integral = 1;
 % mesh.phase.fraction    = ones(1,NumIntervals)/NumIntervals;
 
 %-------------------------------------------------------------------------%
-%------------- Assemble Information into Problem Structure ---------------%        
+%------------- Assemble Information into Problem Structure ---------------%
 %-------------------------------------------------------------------------%
 setup.name                           = 'minCurve';
 setup.functions.continuous           = @continuous;
