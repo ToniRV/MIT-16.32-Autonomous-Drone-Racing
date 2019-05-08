@@ -197,12 +197,12 @@ Quad.Z_dot_min = -10;
 Quad.Z_dot_max = 10;
 
 % Angular position [rad]
-Quad.phi_min = pi/2;
-Quad.phi_max = -pi/2;
-Quad.theta_min = pi/2;
-Quad.theta_max = -pi/2;
-Quad.psi_min = pi/2;
-Quad.psi_max = -pi/2;
+Quad.phi_min = -pi/2;
+Quad.phi_max = pi/2;
+Quad.theta_min = -pi/2;
+Quad.theta_max = pi/2;
+Quad.psi_min = -pi;
+Quad.psi_max = pi;
 
 % Angular rates [rad/s]
 Quad.p_min = -Quad.p_max;
