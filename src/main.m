@@ -27,8 +27,8 @@ initState;
 % Init control
 Quad.Control.U1 = 13.7;
 Quad.Control.U2 = 0;
-Quad.Control.U3 = 1;
-Quad.Control.U4 = 0;
+Quad.Control.U3 = 0;
+Quad.Control.U4 = 1;
 
 Quad.counter = Quad.counter + 1;
 
@@ -56,8 +56,10 @@ t0                              = 0;
 %t1                              = 0.2;
 %t2                              = 0.8;
 tf                              = Quad.sim_time;
-t_tol                           = Quad.Ts;
+t_tol                           = tf;
 
+% Time bounds at each phase:
+% Each new phase starts with the previous phase time.
 t_min = [t0, tf - t_tol];
 t_max = [t0, tf + t_tol];
 
@@ -74,13 +76,15 @@ xmax                            = [10 10;
                                    10 10;
                                    10 10]; % TO FIX
 
-umin                            = [Quad.U1_min Quad.U2_min Quad.U3_min Quad.U4_min];
-umax                            = [Quad.U1_max Quad.U2_max Quad.U3_max Quad.U4_max];
+u_min                            = [Quad.U1_min Quad.U2_min Quad.U3_min Quad.U4_min];
+u_max                            = [Quad.U1_max Quad.U2_max Quad.U3_max Quad.U4_max];
 
 integral_min = [-100, -100, -100];
 integral_max = [100, 100, 100];
 
-for p = 1:3
+gpops_params = gpopsParams;
+
+for p = 1:gpops_params.N_gates
     % Fixed initial time for all phases...
     bounds.phase(p).initialtime.lower  = t_min(p);
     bounds.phase(p).initialtime.upper  = t_max(p);
@@ -102,8 +106,8 @@ for p = 1:3
     bounds.phase(p).state.upper        = xmax(p,:); % NOT SURE
 
     % Control bounds for each phase
-    bounds.phase(p).control.lower      = umin(p);
-    bounds.phase(p).control.upper      = umax(p);
+    bounds.phase(p).control.lower      = u_min(p);
+    bounds.phase(p).control.upper      = u_max(p);
 
     % Integral bounds for each phase
     bounds.phase(p).integral.lower     = integral_min(p);
@@ -121,8 +125,8 @@ bounds.eventgroup(2).upper = zeros(1,3);
 %-------------------------------------------------------------------------%
 x_0 = x_endpoint_min(1,:);
 x_tf = x_endpoint_min(4,:);
-u_min = umin(1);
-u_max = umax(1);
+u_min = u_min(1);
+u_max = u_max(1);
 
 % PHASE 1
 p = 1;
@@ -166,6 +170,7 @@ setup.functions.continuous           = @continuous;
 setup.functions.endpoint             = @endpoint;
 setup.bounds                         = bounds;
 setup.guess                          = guess;
+setup.auxdata                        = gpops_params;
 setup.nlp.solver                     = 'ipopt';
 setup.nlp.ipoptoptions.linear_solver = 'ma57';
 setup.derivatives.supplier           = 'sparseCD';

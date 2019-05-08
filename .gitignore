@@ -1,3 +1,6 @@
+# Matlab temporary files
+*.m~
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof

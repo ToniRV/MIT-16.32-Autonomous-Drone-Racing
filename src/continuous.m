@@ -2,28 +2,31 @@
 % BEGIN: function continuous.m %
 %---------------------------------------------%
 function phaseout = continuous(input)
+% Continuous function returns continuous signals
+% - dynamics: x' = f(x, u, t)
+% - path constraints (if any)
+% - integrands (if any)
+global Quad;
 
-for p = 1:3
+N_gates = input.auxdata.N_gates;
+
+for p = 1:N_gates
+    %% Input
+    % Input State
+    Quad.State = vectorToState(input.phase(p).state);
+    
+    % Input Control
+    Quad.Control = vectorToControl(input.phase(p).control);
+    
+    %% Simulate dynamics
+    % Nonlinear Dynamics given inputs and current state.
+    nonlinearQuadrotorDynamics(Quad.State, Quad.Control);
+ 
+    %% Output
+    % Output dynamics
+    phaseout(p).dynamics = dynamicsToVector(Quad.Dynamics);
     
 end
-% PHASE 1
-v                 = input.phase(1).state(:,2);
-u                 = input.phase(1).control;
-phaseout(1).dynamics = [v, -v + u];
-phaseout(1).integrand = u.*v;
-
-% PHASE 2
-v                 = input.phase(2).state(:,2);
-u                 = v;
-phaseout(2).dynamics = [v, -v + u];
-phaseout(2).integrand = u.*v;
-
-% PHASE 3
-v                 = input.phase(3).state(:,2);
-u                 = input.phase(3).control;
-phaseout(3).dynamics = [v, -v + u];
-phaseout(3).integrand = u.*v;
-
 
 %---------------------------------------------%
 % END: function minCurve.m   %

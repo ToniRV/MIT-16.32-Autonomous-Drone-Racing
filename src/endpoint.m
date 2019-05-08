@@ -2,33 +2,38 @@
 % BEGIN: function minCurveEndpoint.m %
 %-------------------------------------------%
 function output = endpoint(input)
+% Endpoint function returns discrete values
+% I objective function, J
+% I discrete constraints
+% ? endpoint constraints
+% ? state continuity across phases
+% ? isoperimetric constraints
 
-% PHASE 1
-t0{1} = input.phase(1).initialtime;
-tf{1} = input.phase(1).finaltime;
-x0{1} = input.phase(1).initialstate;
-xf{1} = input.phase(1).finalstate;
+N_gates = input.auxdata.N_gates;
 
-% PHASE 2
-t0{2} = input.phase(2).initialtime;
-tf{2} = input.phase(2).finaltime;
-x0{2} = input.phase(2).initialstate;
-xf{2} = input.phase(2).finalstate;
+if N_gates > 1
+    % Connect all phases together
+    for p = 1:N_gates
+        % Collect per phase initial/final Time and States
+        % Time
+        t0{p} = input.phase(p).initialtime;
+        tf{p} = input.phase(p).finaltime;
+        % States
+        x0{p} = input.phase(p).initialstate;
+        xf{p} = input.phase(p).finalstate;
+    end
 
-% PHASE 3
-t0{3} = input.phase(3).initialtime;
-tf{3} = input.phase(3).finaltime;
-x0{3} = input.phase(3).initialstate;
-xf{3} = input.phase(3).finalstate;
-
-% Eventgroups
-output.eventgroup(1).event = [xf{1}(1:2) - x0{2}(1:2), tf{1} - t0{2}];
-output.eventgroup(2).event = [xf{2}(1:2) - x0{3}(1:2), tf{2} - t0{3}];
-
-output.objective = input.phase(1).integral + ...
-                   input.phase(2).integral + ...
-                   input.phase(3).integral;
-
+    for p = 1:N_gates-1
+        % Eventgroups
+        output.eventgroup(p).event = [xf{p} - x0{p+1},...
+                                      tf{p} - t0{p+1}];
+    end
+end
+    
+output.objective = input.phase(end).finaltime;
+% output.objective = input.phase(1).integral + ...
+%                    input.phase(2).integral + ...
+%                    input.phase(3).integral;
 end
 
 
