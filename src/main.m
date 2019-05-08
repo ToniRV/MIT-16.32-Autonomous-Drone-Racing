@@ -1,6 +1,5 @@
 %------------------------- Drone Race Problem ----------------------------%
 %-------------------------------------------------------------------------%
-clear all;
 close all;
 clc;
 
@@ -15,8 +14,8 @@ addpath utilities
 global Quad;
 
 %% Initialize the plot
-initPlot;
-plotQuadModel;
+%initPlot;
+%plotQuadModel;
 
 % Init quad params
 parametersQuad;
@@ -24,67 +23,99 @@ parametersQuad;
 % Init state
 initState;
 
-% Init control
-Quad.Control.U1 = 13.7;
-Quad.Control.U2 = 0;
-Quad.Control.U3 = 0;
-Quad.Control.U4 = 1;
+%% Init control
+% Quad.Control.U1 = 13.7;
+% Quad.Control.U2 = 0;
+% Quad.Control.U3 = 0;
+% Quad.Control.U4 = 0;
+% 
+% Quad.counter = Quad.counter + 1;
+% 
+% while Quad.t_plot(Quad.counter - 1) < max(Quad.t_plot)
+%     % Nonlinear Dynamics given inputs and current state.
+%     nonlinearQuadrotorDynamics(Quad.State, Quad.Control);
+% 
+%     % Update state.
+%     updateState;
+% 
+%     if(mod(Quad.counter, 3) == 0)
+%         % Plot the Quadrotor's Position.
+%         plotQuad
+%         drawnow
+%     end
+% 
+%     % Next timestep.
+%     Quad.counter = Quad.counter + 1;
+% end
 
-Quad.counter = Quad.counter + 1;
-
-while Quad.t_plot(Quad.counter - 1) < max(Quad.t_plot)
-    % Nonlinear Dynamics given inputs and current state.
-    nonlinearQuadrotorDynamics(Quad.State, Quad.Control);
-
-    % Update state.
-    updateState;
-
-    if(mod(Quad.counter, 3) == 0)
-        % Plot the Quadrotor's Position.
-        plotQuad
-        drawnow
-    end
-
-    % Next timestep.
-    Quad.counter = Quad.counter + 1;
-end
-
+%% Setup and Solve Drone Race problem using GPOPS-II
 %-------------------------------------------------------------------------%
 %------------- Provide and Set Up All Bounds for Problem -----------------%
 %-------------------------------------------------------------------------%
+gpops_params = gpopsParams;
+N_gates = gpops_params.N_gates;
+N_states = length(fieldnames(Quad.State));
+
+
 t0                              = 0;
 %t1                              = 0.2;
 %t2                              = 0.8;
-tf                              = Quad.sim_time;
-t_tol                           = tf;
+tf                              = Quad.sim_time; % No clue, it is free!
+t_tol                           = 10;
 
 % Time bounds at each phase:
 % Each new phase starts with the previous phase time.
 t_min = [t0, tf - t_tol];
 t_max = [t0, tf + t_tol];
 
-                  %x %y
-x_endpoint_min = [stateToVector(Quad.State)];
 
-x_endpoint_max = [stateToVector(Quad.State)];
+
+gate_1.position = [0, 0, 1];
+gate_1.orientation = [0, 0, 0];
+gate_1.size = [10 10]; % Height, Width
+gate_1.order = 1;
+gate_1.position_tol = 0.1;
+gate_1.velocity_tol = 0.1;
+gate_1.orientation_tol = 0.1;
+gate_1.spin_tol = 0.1; % angular velocity
+gate_1.state_min = [gate_1.position - gate_1.position_tol, ...
+                    zeros(1, 3), ...
+                    gate_1.orientation - gate_1.orientation_tol, ...
+                    zeros(1, 3)];
+gate_1.state_max = [gate_1.position + gate_1.position_tol, ...
+                    zeros(1, 3), ...
+                    gate_1.orientation + gate_1.orientation_tol, ...
+                    zeros(1, 3)];
+              
+gates = [gate_1];
+
+                  %x %y
+x_endpoint_min = [zeros(1,N_states);
+                  gate_1.state_min];
+
+x_endpoint_max = [zeros(1,N_states);
+                  gate_1.state_max];
 
                                     %x %v
-xmin                            = [-10 -10;
-                                   -10 -10;
-                                   -10 -10]; % TO FIX
-xmax                            = [10 10;
-                                   10 10;
-                                   10 10]; % TO FIX
+x_min = [Quad.X_min Quad.Y_min Quad.Z_min ...
+         Quad.X_dot_min Quad.Y_dot_min Quad.Z_dot_min ...
+         Quad.phi_min Quad.theta_min Quad.psi_min ...
+         Quad.p_min Quad.q_min Quad.r_min ]; % TO FIX
+     
+x_max = [Quad.X_max Quad.Y_max Quad.Z_max ...
+         Quad.X_dot_max Quad.Y_dot_max Quad.Z_dot_max ...
+         Quad.phi_max Quad.theta_max Quad.psi_max ...
+         Quad.p_max Quad.q_max Quad.r_max ]; % TO FIX
 
-u_min                            = [Quad.U1_min Quad.U2_min Quad.U3_min Quad.U4_min];
-u_max                            = [Quad.U1_max Quad.U2_max Quad.U3_max Quad.U4_max];
+u_min = [Quad.U1_min Quad.U2_min Quad.U3_min Quad.U4_min];
+u_max = [Quad.U1_max Quad.U2_max Quad.U3_max Quad.U4_max];
 
-integral_min = [-100, -100, -100];
-integral_max = [100, 100, 100];
+%integral_min = [-100, -100, -100];
+%integral_max = [100, 100, 100];
 
-gpops_params = gpopsParams;
 
-for p = 1:gpops_params.N_gates
+for p = 1:N_gates
+    %% Time
     % Fixed initial time for all phases...
     bounds.phase(p).initialtime.lower  = t_min(p);
     bounds.phase(p).initialtime.upper  = t_max(p);
@@ -93,61 +124,74 @@ for p = 1:gpops_params.N_gates
     bounds.phase(p).finaltime.lower    = t_min(p+1);
     bounds.phase(p).finaltime.upper    = t_max(p+1);
 
+    %% State
     % Fixed initial state for all phases
-    bounds.phase(p).initialstate.lower = x_endpoint_min(p,:);
-    bounds.phase(p).initialstate.upper = x_endpoint_max(p,:);
+    bounds.phase(p).initialstate.lower = x_endpoint_min(p, :);
+    bounds.phase(p).initialstate.upper = x_endpoint_max(p, :);
 
     % Fixed final state for all phases
-    bounds.phase(p).finalstate.lower   = x_endpoint_min(p+1,:);
-    bounds.phase(p).finalstate.upper   = x_endpoint_max(p+1,:);
+    bounds.phase(p).finalstate.lower   = x_endpoint_min(p + 1, :);
+    bounds.phase(p).finalstate.upper   = x_endpoint_max(p + 1, :);
 
     % Tolerance for state on each phase
-    bounds.phase(p).state.lower        = xmin(p,:);
-    bounds.phase(p).state.upper        = xmax(p,:); % NOT SURE
+    bounds.phase(p).state.lower        = x_min(p, :);
+    bounds.phase(p).state.upper        = x_max(p, :); % NOT SURE
 
+    %% Control
     % Control bounds for each phase
     bounds.phase(p).control.lower      = u_min(p);
     bounds.phase(p).control.upper      = u_max(p);
 
+    %% Integral
     % Integral bounds for each phase
-    bounds.phase(p).integral.lower     = integral_min(p);
-    bounds.phase(p).integral.upper     = integral_max(p); % NOT SURE
+    %bounds.phase(p).integral.lower     = integral_min(p);
+    %bounds.phase(p).integral.upper     = integral_max(p); % NOT SURE
+    
+    %% Eventgroup constraints
+    if p < N_gates
+        bounds.eventgroup(p).lower = zeros(1, N_states);
+        bounds.eventgroup(p).upper = zeros(1, N_states);
+    end
 end
-
-bounds.eventgroup(1).lower = zeros(1,3);
-bounds.eventgroup(1).upper = zeros(1,3);
-bounds.eventgroup(2).lower = zeros(1,3);
-bounds.eventgroup(2).upper = zeros(1,3);
 
 %%
 %-------------------------------------------------------------------------%
 %---------------------- Provide Guess of Solution ------------------------%
 %-------------------------------------------------------------------------%
 x_0 = x_endpoint_min(1,:);
-x_tf = x_endpoint_min(4,:);
+x_tf = x_endpoint_min(2,:);
 u_min = u_min(1);
 u_max = u_max(1);
 
-% PHASE 1
-p = 1;
-guess.phase(p).time    = [t0; 0.2];
-guess.phase(p).state   = [x_0; 0.05 0.45];
-guess.phase(p).control = [u_max; u_max];
-guess.phase(p).integral = 0;
+straight_lines_guess = 1;
+if straight_lines_guess
+    for p = 1:N_gates
+        gates(p)
+    end
+end
 
-% PHASE 2
-p = 2;
-guess.phase(p).time    = [0.2; 0.8];
-guess.phase(p).state   = [0.05 0.45; 0.37 0.52];
-guess.phase(p).control = [0.5; 0.5];
-guess.phase(p).integral = 1;
+for p = 1:N_gates
+    % PHASE 1
+    guess.phase(p).time    = [t0; 0.2];
+    guess.phase(p).state   = [x_0; 0.05 0.45];
+    guess.phase(p).control = [u_max; u_max];
+    %guess.phase(p).integral = 0;
+end
 
-% PHASE 3
-p = 3;
-guess.phase(p).time    = [t0; tf];
-guess.phase(p).state   = [0.37 0.52; x_tf];
-guess.phase(p).control = [u_max; u_max];
-guess.phase(p).integral = 1;
+
+% % PHASE 2
+% p = 2;
+% guess.phase(p).time    = [0.2; 0.8];
+% guess.phase(p).state   = [0.05 0.45; 0.37 0.52];
+% guess.phase(p).control = [0.5; 0.5];
+% guess.phase(p).integral = 1;
+% 
+% % PHASE 3
+% p = 3;
+% guess.phase(p).time    = [t0; tf];
+% guess.phase(p).state   = [0.37 0.52; x_tf];
+% guess.phase(p).control = [u_max; u_max];
+% guess.phase(p).integral = 1;
 
 %%
 %-------------------------------------------------------------------------%
@@ -165,7 +209,7 @@ guess.phase(p).integral = 1;
 %-------------------------------------------------------------------------%
 %------------- Assemble Information into Problem Structure ---------------%
 %-------------------------------------------------------------------------%
-setup.name                           = 'minCurve';
+setup.name                           = 'Drone-Race';
 setup.functions.continuous           = @continuous;
 setup.functions.endpoint             = @endpoint;
 setup.bounds                         = bounds;

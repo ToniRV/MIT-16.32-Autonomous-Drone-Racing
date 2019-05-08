@@ -128,16 +128,6 @@ Quad.U2 = 0;       % Torque about X axis BF (N-m)
 Quad.U3 = 0;       % Torque about Y axis BF (N-m)
 Quad.U4 = 0;       % Torque about Z axis BF (N-m)
 
-% Control Limits (update values)
-Quad.U1_max = 43.5;   % Quad.KT*4*Quad.max_motor_speed^2
-Quad.U1_min = 0;      %
-Quad.U2_max = 6.25;  % Quad.KT*Quad.l*Quad.max_motor_speed^2
-Quad.U2_min = -6.25; % Quad.KT*Quad.l*Quad.max_motor_speed^2
-Quad.U3_max = 6.25;  % Quad.KT*Quad.l*Quad.max_motor_speed^2
-Quad.U3_min = -6.25; % Quad.KT*Quad.l*Quad.max_motor_speed^2
-Quad.U4_max = 2.25; % Quad.Kd*2*Quad.max_motor_speed^2
-Quad.U4_min = -2.25;% Quad.Kd*2*Quad.max_motor_speed^2
-
 %% PID parameters
 Quad.X_KP = .35;          % KP value in X position control
 Quad.X_KI = .25;            % KI value in X position control
@@ -215,8 +205,18 @@ Quad.psi_min = pi/2;
 Quad.psi_max = -pi/2;
 
 % Angular rates [rad/s]
-Quad.p_max = -Quad.p_max;
+Quad.p_min = -Quad.p_max;
 Quad.q_min = -Quad.q_max;
-Quad.r_max = -Quad.r_max;
+Quad.r_min = -Quad.r_max;
 
+
+% Control Limits (update values)
+Quad.U1_max = 43.5;   % Quad.KT*4*Quad.max_motor_speed^2
+Quad.U1_min = 0;      %
+Quad.U2_max = 6.25;  % Quad.KT*Quad.l*Quad.max_motor_speed^2
+Quad.U2_min = -6.25; % Quad.KT*Quad.l*Quad.max_motor_speed^2
+Quad.U3_max = 6.25;  % Quad.KT*Quad.l*Quad.max_motor_speed^2
+Quad.U3_min = -6.25; % Quad.KT*Quad.l*Quad.max_motor_speed^2
+Quad.U4_max = 2.25; % Quad.Kd*2*Quad.max_motor_speed^2
+Quad.U4_min = -2.25;% Quad.Kd*2*Quad.max_motor_speed^2
 end
