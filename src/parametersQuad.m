@@ -209,7 +209,6 @@ Quad.p_min = -Quad.p_max;
 Quad.q_min = -Quad.q_max;
 Quad.r_min = -Quad.r_max;
 
-
 % Control Limits (update values)
 Quad.U1_max = 43.5;   % Quad.KT*4*Quad.max_motor_speed^2
 Quad.U1_min = 0;      %

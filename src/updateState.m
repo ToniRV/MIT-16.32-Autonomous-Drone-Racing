@@ -15,9 +15,9 @@ Quad.State.p = Quad.Dynamics.p_dot*Quad.Ts+Quad.State.p;
 Quad.State.q = Quad.Dynamics.q_dot*Quad.Ts+Quad.State.q;
 Quad.State.r = Quad.Dynamics.r_dot*Quad.Ts+Quad.State.r;
 % Calculating angular velocity and position
-Quad.State.phi = Quad.Dynamics.phi_dot*Quad.Ts + Quad.State.phi;
+Quad.State.phi   = Quad.Dynamics.phi_dot*Quad.Ts + Quad.State.phi;
 Quad.State.theta = Quad.Dynamics.theta_dot*Quad.Ts+Quad.State.theta;
-Quad.State.psi = Quad.Dynamics.psi_dot*Quad.Ts+Quad.State.psi;
+Quad.State.psi   = Quad.Dynamics.psi_dot*Quad.Ts+Quad.State.psi;
 
 %% Update Plotting Variables
 % Flip positive Z axis up for intuitive plotting

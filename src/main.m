@@ -179,100 +179,45 @@ solution = output.result.solution;
 %-------------------------------------------------------------------------%
 
 %% Plot State History
-f = figure('DefaultAxesFontSize', 16);
-f.Name = 'MultiPhase';
-subplot(4,3,1)
-title('X Numerical')
-hold on
-for p = 1:N_gates
-  plot(solution.phase(p).time, solution.phase(p).state(:,1), 'LineWidth', 2)
-end
-xlabel('t'), ylabel('x')
+plotStates(N_gates, solution, Quad);
 
-subplot(4,3,2)
-title('Y Numerical')
-hold on
-for p = 1:N_gates
-  plot(solution.phase(p).time, solution.phase(p).state(:,2), 'LineWidth', 2)
-end
-xlabel('t'), ylabel('y')
+%% Plot Control History
+plotControls(N_gates, solution, Quad);
 
-subplot(4,3,3)
-title('Z Numerical')
-hold on
-for p = 1:N_gates
-  plot(solution.phase(p).time, solution.phase(p).state(:,3), 'LineWidth', 2)
-end
-xlabel('t'), ylabel('z')
+%% Initialize the plot
+initPlot;
+plotQuadModel;
 
-subplot(4,3,4)
-title('Velocity X Numerical')
-hold on
-for p = 1:N_gates
-  plot(solution.phase(p).time, solution.phase(p).state(:,4), 'LineWidth', 2)
-end
-xlabel('t'), ylabel('Vel X')
+% Init state
+initState;
 
-subplot(4,3,5)
-title('Velocity Y Numerical')
-hold on
-for p = 1:N_gates
-  plot(solution.phase(p).time, solution.phase(p).state(:,5), 'LineWidth', 2)
-end
-xlabel('t'), ylabel('Vel Y')
+% Convert solution state to list of Quad.State
+Quad.State = vectorToState(solution.phase(p).state);
 
-subplot(4,3,6)
-title('Velocity Z Numerical')
-hold on
-for p = 1:N_gates
-  plot(solution.phase(p).time, solution.phase(p).state(:,6), 'LineWidth', 2)
-end
-xlabel('t'), ylabel('Vel Z')
+% Convert solution control to list of Quad.Control
+Quad.Control = vectorToControl(
 
-subplot(4,3,7)
-title('Phi Numerical')
-hold on
-for p = 1:N_gates
-  plot(solution.phase(p).time, solution.phase(p).state(:,7), 'LineWidth', 2)
-end
-xlabel('t'), ylabel('Phi'), ylim([Quad.phi_min Quad.phi_max])
+% Convert solution time to list of Quad.Ts
+Quad.Ts = solution.phase(p).time;
 
-subplot(4,3,8)
-title('Theta Numerical')
-hold on
-for p = 1:N_gates
-  plot(solution.phase(p).time, solution.phase(p).state(:,8), 'LineWidth', 2)
-end
-xlabel('t'), ylabel('Theta'), ylim([Quad.theta_min Quad.theta_max])
+% Loop over each (Quad.State, Quad.Control, Quad.Ts),
+% and plotQuad
 
-subplot(4,3,9)
-title('Psi Numerical')
-hold on
-for p = 1:N_gates
-  plot(solution.phase(p).time, solution.phase(p).state(:,9), 'LineWidth', 2)
-end
-xlabel('t'), ylabel('Psi'), ylim([Quad.psi_min Quad.psi_max])
+while Quad.t_plot(Quad.counter - 1) < max(Quad.t_plot)
 
-subplot(4,3,10)
-title('p Numerical')
-hold on
-for p = 1:N_gates
-  plot(solution.phase(p).time, solution.phase(p).state(:,10), 'LineWidth', 2)
-end
-xlabel('t'), ylabel('p'), ylim([Quad.p_min Quad.p_max]) 
+    
+    % Nonlinear Dynamics given inputs and current state.
+    nonlinearQuadrotorDynamics(Quad.State, Quad.Control);
 
-subplot(4,3,11)
-title('q Numerical')
-hold on
-for p = 1:N_gates
-  plot(solution.phase(p).time, solution.phase(p).state(:,11), 'LineWidth', 2)
-end
-xlabel('t'), ylabel('q'), ylim([Quad.q_min Quad.q_max])
+    % Update state.
+    updateState;
 
-subplot(4,3,12)
-title('r Numerical')
-hold on
-for p = 1:N_gates
-  plot(solution.phase(p).time, solution.phase(p).state(:,12), 'LineWidth', 2)
+    if(mod(Quad.counter, 3) == 0)
+        % Plot the Quadrotor's Position.
+        plotQuad
+        drawnow
+    end
+
+    % Next timestep.
+    Quad.counter = Quad.counter + 1;
 end
-xlabel('t'), ylabel('r'), ylim([Quad.r_min Quad.r_max])
