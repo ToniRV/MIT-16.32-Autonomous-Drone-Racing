@@ -147,13 +147,13 @@ Quad.Z_KI_lim = .25;         % Error to start calculating integral term
 Quad.phi_KP = 4.5;      % KP value in roll control 2
 Quad.phi_KI = 0;       % KI value in roll control   1
 Quad.phi_KD = 0;     % KD value in roll control  -.5
-Quad.phi_max = pi/4;   % Maximum roll angle commanded
+%%%%Quad.phi_max = pi/4;   % Maximum roll angle commanded
 Quad.phi_KI_lim = 2*(2*pi/360);  % Error to start calculating integral
 
 Quad.theta_KP = 4.5;    % KP value in pitch control 2
 Quad.theta_KI = 0;     % KI value in pitch control 1
 Quad.theta_KD = 0;   % KD value in pitch control -.5
-Quad.theta_max = pi/4; % Maximum pitch angle commanded
+%%%%Quad.theta_max = pi/4; % Maximum pitch angle commanded
 Quad.theta_KI_lim = 2*(2*pi/360);  % Error to start calculating integral
 
 Quad.psi_KP = 10;     % KP value in yaw control
