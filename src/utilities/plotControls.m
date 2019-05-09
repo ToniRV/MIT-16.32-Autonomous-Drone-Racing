@@ -1,4 +1,4 @@
-function plotControls(N_gates, solution)
+function plotControls(N_gates, solution, Quad)
     f = figure('DefaultAxesFontSize', 16);
     f.Name = 'Controls';
     subplot(2,2,1)
@@ -7,7 +7,7 @@ function plotControls(N_gates, solution)
     for p = 1:N_gates
       plot(solution.phase(p).time, solution.phase(p).control(:,1), 'LineWidth', 2)
     end
-    xlabel('t'), ylabel('U1')
+    xlabel('t'), ylabel('U1'), ylim([0 Quad.U1_max])
 
     subplot(2,2,2)
     title('U2')

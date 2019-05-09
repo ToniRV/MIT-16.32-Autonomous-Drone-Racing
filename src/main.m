@@ -52,26 +52,24 @@ initState;
 %-------------------------------------------------------------------------%
 %------------- Provide and Set Up All Bounds for Problem -----------------%
 %-------------------------------------------------------------------------%
-gpops_params = gpopsParams;
-N_gates = gpops_params.N_gates;
-N_states = length(fieldnames(Quad.State));
 
-gates = generateGates(N_states, N_gates);
-                                    %x %v
+gates = generateGates();
+N_phases = length(gates) - 1;
+                                    
 x_min = [Quad.X_min Quad.Y_min Quad.Z_min ...
          Quad.X_dot_min Quad.Y_dot_min Quad.Z_dot_min ...
          Quad.phi_min Quad.theta_min Quad.psi_min ...
-         Quad.p_min Quad.q_min Quad.r_min ]; % TO FIX
+         Quad.p_min Quad.q_min Quad.r_min ];
 
 x_max = [Quad.X_max Quad.Y_max Quad.Z_max ...
          Quad.X_dot_max Quad.Y_dot_max Quad.Z_dot_max ...
          Quad.phi_max Quad.theta_max Quad.psi_max ...
-         Quad.p_max Quad.q_max Quad.r_max ]; % TO FIX
+         Quad.p_max Quad.q_max Quad.r_max ];
 
 u_min = [Quad.U1_min Quad.U2_min Quad.U3_min Quad.U4_min];
 u_max = [Quad.U1_max Quad.U2_max Quad.U3_max Quad.U4_max];
 
-for p = 1:N_gates
+for p = 1:N_phases
     %% Time
     % Fixed initial time for all phases...
     bounds.phase(p).initialtime.lower  = gates(p).time_min;
@@ -99,15 +97,11 @@ for p = 1:N_gates
     bounds.phase(p).control.lower      = u_min;
     bounds.phase(p).control.upper      = u_max;
 
-    %% Integral
-    % Integral bounds for each phase
-    %bounds.phase(p).integral.lower     = integral_min(p);
-    %bounds.phase(p).integral.upper     = integral_max(p); % NOT SURE
-
     %% Eventgroup constraints
-    if p < N_gates
-        bounds.eventgroup(p).lower = zeros(1, N_states);
-        bounds.eventgroup(p).upper = zeros(1, N_states);
+    if p < N_phases
+        N_states = length(fieldnames(Quad.State));
+        bounds.eventgroup(p).lower = zeros(1, N_states + 1); % +1 for time.
+        bounds.eventgroup(p).upper = zeros(1, N_states + 1); % +1 for time.
     end
 end
 
@@ -123,7 +117,7 @@ end
 %     end
 % end
 
-for p = 1:N_gates
+for p = 1:N_phases
     % PHASE 1
     guess.phase(p).time    = [gates(p).guess_time; gates(p + 1).guess_time];
     guess.phase(p).state   = [gates(p).guess_state; gates(p + 1).guess_state];
@@ -152,7 +146,7 @@ setup.functions.continuous           = @continuous;
 setup.functions.endpoint             = @endpoint;
 setup.bounds                         = bounds;
 setup.guess                          = guess;
-setup.auxdata                        = gpops_params;
+setup.auxdata                        = N_phases;
 setup.nlp.solver                     = 'ipopt';
 setup.nlp.ipoptoptions.linear_solver = 'ma57';
 setup.derivatives.supplier           = 'sparseCD';
@@ -179,10 +173,10 @@ load('GPOPS_DroneRace_solution');
 %-------------------------------------------------------------------------%
 
 %% Plot State History
-plotStates(N_gates, solution, Quad);
+plotStates(N_phases, solution, Quad);
 
 %% Plot Control History
-plotControls(N_gates, solution);
+plotControls(N_phases, solution, Quad);
 
 %% Initialize the plot
 hold off;
@@ -192,7 +186,7 @@ plotQuadModel;
 
 plotGates(gates);
 
-for p = 1:N_gates 
+for p = 1:N_phases 
     for idx = 1:size(solution.phase(p).state, 1)
         % Convert solution state to list of Quad.State
         Quad.State = vectorToState(solution.phase(p).state(idx, :));
@@ -202,7 +196,7 @@ for p = 1:N_gates
         
         % Plot Quad
         plotQuad
-        pause(0.2)
+        pause(0.1)
         drawnow
     end
 end

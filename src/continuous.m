@@ -8,9 +8,9 @@ function phaseout = continuous(input)
 % - integrands (if any)
 global Quad;
 
-N_gates = input.auxdata.N_gates;
+N_phases = input.auxdata;
 
-for p = 1:N_gates
+for p = 1:N_phases
     %% Input
     % Input State
     Quad.State = vectorToState(input.phase(p).state);

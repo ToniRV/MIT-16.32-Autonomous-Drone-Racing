@@ -9,11 +9,11 @@ function output = endpoint(input)
 % ? state continuity across phases
 % ? isoperimetric constraints
 
-N_gates = input.auxdata.N_gates;
+N_phases = input.auxdata;
 
-if N_gates > 1
+if N_phases > 1
     % Connect all phases together
-    for p = 1:N_gates
+    for p = 1:N_phases
         % Collect per phase initial/final Time and States
         % Time
         t0{p} = input.phase(p).initialtime;
@@ -23,7 +23,7 @@ if N_gates > 1
         xf{p} = input.phase(p).finalstate;
     end
 
-    for p = 1:N_gates-1
+    for p = 1:N_phases - 1
         % Eventgroups
         output.eventgroup(p).event = [xf{p} - x0{p+1},...
                                       tf{p} - t0{p+1}];
