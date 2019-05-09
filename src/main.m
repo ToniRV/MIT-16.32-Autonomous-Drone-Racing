@@ -56,12 +56,6 @@ gpops_params = gpopsParams;
 N_gates = gpops_params.N_gates;
 N_states = length(fieldnames(Quad.State));
 
-t0                              = 0;
-%t1                              = 0.2;
-%t2                              = 0.8;
-tf                              = Quad.sim_time; % No clue, it is free!
-t_tol                           = 10;
-
 gates = generateGates(N_states, N_gates);
                                     %x %v
 x_min = [Quad.X_min Quad.Y_min Quad.Z_min ...
@@ -173,6 +167,12 @@ setup.method                         = 'RPM-Differentiation';
 output = gpops2(setup);
 solution = output.result.solution;
 
+%% Save Gpops solution
+save('GPOPS_DroneRace_solution');
+
+%% Reload Gpops
+load('GPOPS_DroneRace_solution');
+
 %%
 %-------------------------------------------------------------------------%
 %---------------------- Plot Solution ------------------------------------%
@@ -182,42 +182,26 @@ solution = output.result.solution;
 plotStates(N_gates, solution, Quad);
 
 %% Plot Control History
-plotControls(N_gates, solution, Quad);
+plotControls(N_gates, solution);
 
 %% Initialize the plot
+hold off;
 initPlot;
+
 plotQuadModel;
 
-% Init state
-initState;
+plotGates(gates);
 
-% Convert solution state to list of Quad.State
-Quad.State = vectorToState(solution.phase(p).state);
+for p = 1:N_gates 
+    for idx = 1:size(solution.phase(p).state, 1)
+        % Convert solution state to list of Quad.State
+        Quad.State = vectorToState(solution.phase(p).state(idx, :));
 
-% Convert solution control to list of Quad.Control
-Quad.Control = vectorToControl(
-
-% Convert solution time to list of Quad.Ts
-Quad.Ts = solution.phase(p).time;
-
-% Loop over each (Quad.State, Quad.Control, Quad.Ts),
-% and plotQuad
-
-while Quad.t_plot(Quad.counter - 1) < max(Quad.t_plot)
-
-    
-    % Nonlinear Dynamics given inputs and current state.
-    nonlinearQuadrotorDynamics(Quad.State, Quad.Control);
-
-    % Update state.
-    updateState;
-
-    if(mod(Quad.counter, 3) == 0)
-        % Plot the Quadrotor's Position.
+        % Convert solution control to list of Quad.Control
+        Quad.Control = vectorToControl(solution.phase(p).control(idx, :));
+        
+        % Plot Quad
         plotQuad
         drawnow
     end
-
-    % Next timestep.
-    Quad.counter = Quad.counter + 1;
 end

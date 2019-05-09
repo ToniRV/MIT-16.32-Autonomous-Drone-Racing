@@ -7,6 +7,8 @@
 
 function initPlot()
 % initPlot This function initializes the plots
+f = figure('DefaultAxesFontSize', 16);
+f.Name = '3D Drone Visualization';
 
 % figure('units','normalized','position',[.1 .1 .8 .8],'name','Quadrotor AUS','numbertitle','off','color','w');
 axes('units','normalized','position',[.2 .1 .6 .8]);
@@ -64,7 +66,8 @@ hlight = camlight('headlight');
 lighting gouraud
 set(gcf,'Renderer','OpenGL')
 
-line([-1 1],[0 0],[0 0])
-line([0 0],[-.5 .5],[0 0],'color','r')
+line([-1 1],[0 0],[0 0], 'color', 'r')
+line([0 0],[-.5 .5],[0 0], 'color', 'g')
+line([0 0],[0 0],[-.5 .5], 'color', 'b')
 
 end

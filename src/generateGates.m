@@ -8,7 +8,7 @@ function gates = generateGates(N_states, N_gates)
         gates(g).order = g;
 
         % Gate size
-        gates(g).size         = [10 10]; % Height, Width
+        gates(g).size         = [0.1 0.1]; % Height, Width
 
         % Tolerances
         gates(g).time_tol         = 10;
@@ -35,7 +35,7 @@ function gates = generateGates(N_states, N_gates)
     gates(1).guess_control = u_hover;
 
     %% GATE 1
-    gates(2).position    = [0, 1, 1];
+    gates(2).position    = [2, 0, 1];
     gates(2).orientation = [0, 0, 0];
 
     gates(2).guess_time = 1;

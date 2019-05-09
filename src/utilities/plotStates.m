@@ -96,5 +96,7 @@ function plotStates(N_gates, solution, Quad)
       plot(solution.phase(p).time, solution.phase(p).state(:,12), 'LineWidth', 2)
     end
     xlabel('t'), ylabel('r'), ylim([Quad.r_min Quad.r_max])
+    
+    hold off;
 end
 

@@ -1,4 +1,4 @@
-function plotStates(N_gates, solution, Quad)
+function plotControls(N_gates, solution)
     f = figure('DefaultAxesFontSize', 16);
     f.Name = 'Controls';
     subplot(2,2,1)
@@ -32,4 +32,6 @@ function plotStates(N_gates, solution, Quad)
       plot(solution.phase(p).time, solution.phase(p).control(:,4), 'LineWidth', 2)
     end
     xlabel('t'), ylabel('U4')
+    
+    hold off;
 end
