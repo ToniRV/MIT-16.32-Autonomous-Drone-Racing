@@ -66,8 +66,8 @@ hlight = camlight('headlight');
 lighting gouraud
 set(gcf,'Renderer','OpenGL')
 
-line([-1 1],[0 0],[0 0], 'color', 'r')
-line([0 0],[-.5 .5],[0 0], 'color', 'g')
-line([0 0],[0 0],[-.5 .5], 'color', 'b')
+line([0 1],[0 0],[0 0], 'color', 'r')
+line([0 0],[0 .5],[0 0], 'color', 'g')
+line([0 0],[0 0],[0 .5], 'color', 'b')
 
 end

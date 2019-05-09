@@ -202,6 +202,7 @@ for p = 1:N_gates
         
         % Plot Quad
         plotQuad
+        pause(0.2)
         drawnow
     end
 end
