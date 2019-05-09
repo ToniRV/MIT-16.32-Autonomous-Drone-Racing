@@ -23,5 +23,5 @@ for p = 1:N_phases
 end
 
 %---------------------------------------------%
-% END: function minCurve.m   %
+% END: function continuous.m   %
 %---------------------------------------------%
