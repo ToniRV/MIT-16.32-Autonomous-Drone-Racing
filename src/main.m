@@ -186,7 +186,7 @@ plotQuadModel;
 
 plotGates(gates);
 
-for p = 1:N_phases 
+for p = 1:N_phases
     for idx = 1:size(solution.phase(p).state, 1)
         % Convert solution state to list of Quad.State
         Quad.State = vectorToState(solution.phase(p).state(idx, :));

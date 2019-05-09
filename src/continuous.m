@@ -11,16 +11,10 @@ global Quad;
 N_phases = input.auxdata;
 
 for p = 1:N_phases
-    %% Input
-    % Input State
-    Quad.State = vectorToState(input.phase(p).state);
-    
-    % Input Control
-    Quad.Control = vectorToControl(input.phase(p).control);
-    
     %% Simulate dynamics
     % Nonlinear Dynamics given inputs and current state.
-    nonlinearQuadrotorDynamics(Quad.State, Quad.Control);
+    nonlinearQuadrotorDynamics(vectorToState(input.phase(p).state), ...
+                               vectorToControl(input.phase(p).control));
  
     %% Output
     % Output dynamics

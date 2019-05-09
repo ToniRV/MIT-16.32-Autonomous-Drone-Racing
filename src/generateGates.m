@@ -1,7 +1,7 @@
 function gates = generateGates()
 %GENERATEGATES generates a vector of gates.
 
-    N_gates = 3;
+    N_gates = 5;
 
     %% Adjoint gates:
     for g = 1:N_gates % + 1 for start gate
@@ -67,7 +67,7 @@ function gates = generateGates()
     gates(2).guess_control = u_hover;
 
     %% GATE 3
-    gates(3).position    = [0, 0, 2];
+    gates(3).position    = [0, 2, 2];
     gates(3).velocity    = zeros(1, 3);
     gates(3).orientation = zeros(1, 3);
     gates(3).spin        = zeros(1, 3);
@@ -90,6 +90,56 @@ function gates = generateGates()
                           gates(3).spin        + gates(3).spin_tol];
 
     gates(3).guess_control = u_hover;
+
+    %% GATE 4
+    gates(4).position    = [1, 3, 1];
+    gates(4).velocity    = zeros(1, 3);
+    gates(4).orientation = zeros(1, 3);
+    gates(4).spin        = zeros(1, 3);
+
+    gates(4).guess_time = 3;
+    gates(4).time_min   = 0;
+    gates(4).time_max   = gates(4).time_tol;
+
+    gates(4).guess_state = [gates(4).position, ...
+                            gates(4).velocity, ...
+                            gates(4).orientation, ...
+                            gates(4).spin];
+    gates(4).state_min = [gates(4).position    - gates(4).position_tol, ...
+                          gates(4).velocity    - gates(4).velocity_tol, ...
+                          gates(4).orientation - gates(4).orientation_tol, ...
+                          gates(4).spin        - gates(4).spin_tol];
+    gates(4).state_max = [gates(4).position    + gates(4).position_tol, ...
+                          gates(4).velocity    + gates(4).velocity_tol, ...
+                          gates(4).orientation + gates(4).orientation_tol, ...
+                          gates(4).spin        + gates(4).spin_tol];
+
+    gates(4).guess_control = u_hover;
+
+    %% GATE 5
+    gates(5).position    = [2, 1, 2];
+    gates(5).velocity    = zeros(1, 3);
+    gates(5).orientation = zeros(1, 3);
+    gates(5).spin        = zeros(1, 3);
+
+    gates(5).guess_time = 4;
+    gates(5).time_min   = 0;
+    gates(5).time_max   = gates(5).time_tol;
+
+    gates(5).guess_state = [gates(5).position, ...
+                            gates(5).velocity, ...
+                            gates(5).orientation, ...
+                            gates(5).spin];
+    gates(5).state_min = [gates(5).position    - gates(5).position_tol, ...
+                          gates(5).velocity    - gates(5).velocity_tol, ...
+                          gates(5).orientation - gates(5).orientation_tol, ...
+                          gates(5).spin        - gates(5).spin_tol];
+    gates(5).state_max = [gates(5).position    + gates(5).position_tol, ...
+                          gates(5).velocity    + gates(5).velocity_tol, ...
+                          gates(5).orientation + gates(5).orientation_tol, ...
+                          gates(5).spin        + gates(5).spin_tol];
+
+    gates(5).guess_control = u_hover;
 
     % Sanity check that there are as many gates as expected.
     assert(length(gates) == N_gates);
