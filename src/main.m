@@ -1,6 +1,6 @@
 %------------------------- Drone Race Problem ----------------------------%
 %-------------------------------------------------------------------------%
-close all;
+close all; 
 clc;
 
 % Addpaths
@@ -118,11 +118,9 @@ end
 % end
 
 for p = 1:N_phases
-    % PHASE 1
     guess.phase(p).time    = [gates(p).guess_time; gates(p + 1).guess_time];
     guess.phase(p).state   = [gates(p).guess_state; gates(p + 1).guess_state];
     guess.phase(p).control = [gates(p).guess_control; gates(p + 1).guess_control];
-    %guess.phase(p).integral = 0;
 end
 
 %%
@@ -196,7 +194,7 @@ for p = 1:N_phases
         
         % Plot Quad
         plotQuad
-        pause(0.1)
+        %pause(0.1)
         drawnow
     end
 end

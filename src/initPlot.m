@@ -49,9 +49,9 @@ axis equal
 
 % pop1 = uicontrol('units','normalized','position',[.02 .15 .19 .07],'style','popupmenu','fontsize',13,'string',{'3D view';'Camera view'},'callback',@view1,'value',1);
 
-% axis([-5 5 -5 5 0 5])
-axis([-2 2 -2 2 -2 2]);
-view(30,30)
+ axis([-5 5 -5 5 0 5])
+%axis([-2 2 -2 2 -2 2]);
+view(30,10)
 grid on
 hold on
 

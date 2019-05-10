@@ -3,35 +3,23 @@
 \section{Approach}
 \label{sec:mathematical_formulation}
 
-The minimum time optimal control problem can be generically formulated as follows:
-
-\textbf{Cost}: $$J=\int_{t_{0}}^{t_{f}} d t$$
-
-\textbf{Nonlinear Dynamics:} $$\dot{x}(t)= f(x(t), u(t), t)$$
-
-\textbf{Constraints:} 
-\begin{itemize}
-  \item Input constraints:
-    $$M_{i}^{-} \leq u_{i}(t) \leq M_{i}^{+}$$
-  \item Path constraints:
-  $\forall t, t_{0} \leq t \leq t_{f}$ 
-  $$c(x(t), u(t), t) \leq 0,$$
-\end{itemize}
-
-\textbf{Boundary Conditions:}
-Given 
-\begin{itemize}
-  \item Initial: $n(x(t_{0}), t_{0}) = 0$
-  \item Final: $m(x(t_{f}), t_{f}) = 0$
-\end{itemize}
+We formulate our drone race optimization problem as a minimum time optimal control problem with nonlinear dynamics and constraints.
+Therefore, we must define both the dynamics of a drone and the constraints to pass through each gate.
+\Cref{ssec:model}, \ref{ssec:dynamics} and \ref{ssec:drag} present the nonlinear dynamics for a quadcopter.
+\Cref{ssec:state_space_model} casts the quadcopter dynamics using a state-space model.
+The state-space formulation allows us to present in a compact form the optimization problem that we detail in \cref{ssec:optimization_problem}.
 
 \subsection{Mathematical Model of a Quadcopter}
+\label{ssec:model}
 
-Absolute position: $x, y, z$.
+The absolute position $\boldsymbol{\xi}$ of the drone is given in an Euclidean inertial frame, referred to as \textit{world frame} ($G$), by: $x, y, z$.
+This corresponds to the 3D coordinates of the center of mass of the drone.
+The attitude $\boldsymbol{\eta}$ of the drone with respect to the world frame is given using Euler angles: pitch $\theta$, roll $\phi$, and yaw $\psi$.
 
-Attitude: pitch $\theta$, roll $\phi$, yaw $\psi$.
+$$\boldsymbol{\xi}=\left[ \begin{array}{l}{x} \\ {y} \\ {z}\end{array}\right],
+ \quad \boldsymbol{\eta}=\left[ \begin{array}{l}{\phi} \\ {\theta} \\ {\psi}\end{array}\right]$$
 
-$$\boldsymbol{\xi}=\left[ \begin{array}{l}{x} \\ {y} \\ {z}\end{array}\right], \quad \boldsymbol{\eta}=\left[ \begin{array}{l}{\phi} \\ {\theta} \\ {\psi}\end{array}\right]$$
+\Cref{fig:reference_frames} shows the frame of reference of the drone, referred to as \textit{body frame} ($B$), with respect to the world frame.
 
 Linear velocities (body frame): $\boldsymbol{V}_{B}$
 
@@ -39,8 +27,8 @@ Angular velocities (body frame): $\boldsymbol{\nu}$
 
 $$\boldsymbol{V}_{B}=\left[ \begin{array}{c}{v_{x, B}} \\ {v_{y, B}} \\ {v_{z, B}}\end{array}\right], \quad \boldsymbol{\nu}=\left[ \begin{array}{l}{p} \\ {q} \\ {r}\end{array}\right]$$
 
-The rotation matrix from the body frame ($B$) to the inertial frame ($G$) is given by:
-$\mathbf{x}^{B}=\mathbf{R}_{G}^{B} \mathbf{X}^{G}=\mathbf{R}(\phi) \mathbf{R}(\theta) \mathbf{R}(\psi) \mathbf{X}^{G}$
+The rotation matrix from the body frame $B$ to the world frame $G$ is given by:
+$\mathbf{X}^{B}=\mathbf{R}_{G}^{B} \mathbf{X}^{G}=\mathbf{R}(\phi) \mathbf{R}(\theta) \mathbf{R}(\psi) \mathbf{X}^{G}$
 
 $$\boldsymbol{R}_B^G=\boldsymbol{R}=\left[ \begin{array}{ccc}{C_{\psi} C_{\theta}} & {C_{\psi} S_{\theta} S_{\phi}-S_{\psi} C_{\phi}} & {C_{\psi} S_{\theta} C_{\phi}+S_{\psi} S_{\phi}} \\ {S_{\psi} C_{\theta}} & {S_{\psi} S_{\theta} S_{\phi}+C_{\psi} C_{\phi}} & {S_{\psi} S_{\theta} C_{\phi}-C_{\psi} S_{\phi}} \\ {-S_{\theta}} & {C_{\theta} S_{\phi}} & {C_{\theta} C_{\phi}}\end{array}\right]$$
 
@@ -82,42 +70,43 @@ The matrix $\boldsymbol{W}_{\eta}$ is invertible if $\theta \neq(2 k-1) \phi / 2
 
   $$\boldsymbol{I}=\left[ \begin{array}{ccc}{I_{x x}} & {0} & {0} \\ {0} & {I_{y y}} & {0} \\ {0} & {0} & {I_{z z}}\end{array}\right]$$
 
-    We further have that due to symmetry inertial components are equal: $I_{xx}=I_{yy}$.
+    We further have that due to symmetry, that the inertial components in the x- and y-axes are equal: $I_{xx}=I_{yy}$.
 
   \item The thrust and drag of each motor is proportional to the square of the motor velocity.
   \item The propellers are considered to be rigid and therefore blade flapping is negligible
-    (deformation of propeller blades due to high velocities and flexible material. 
+    (deformation of propeller blades due to high velocities and flexible material). 
   \item The Earth is flat and non-rotating (difference of gravity by altitude or the spin of the earth
-  is negligible)
-  \item Surrounding fluid velocities (wind) are negligible. 
-  \item Ground effect is negligible.
+  is negligible).
+  \item Ground effects that increase lift and decrease aerodynamic drag when flying close to the ground is considered negligible.
 \end{itemize}
 
 These assumptions and basic dynamics lead to the model used in this work.
-The following derivations are a summary of the equations in \cite{}.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\linewidth]{img/reference_frames.png}
-  \caption{The inertial and body frames of a quadcopter (ENU coordinates). Figure from \cite{TODO}.}
+  \caption{The inertial and body frames of a quadcopter using the East North Up convention (ENU). Figure from \cite{aalto}.}
   \label{fig:reference_frames}
 \end{figure}
 
 \subsection{Quadcopter Dynamics}
+\label{ssec:dynamics}
+
+The following derivations are a summary of the equations in \cite{aalto}.
 \begin{itemize}
   \item The angular velocity of rotor $i,$ denoted with $\omega_{i},$ creates force $f_{i}$ in the direction of
 the rotor axis: 
 $$f_{i}=k \omega_{i}^{2}$$
 
-The combined forces of rotors create thrust $T$ in the direction of the body z-axis.
+where the lift constant is $k$.
+The combined forces of rotors create thrust $T$ in the direction of the body z-axis (represented as $\boldsymbol{T}_{B}$).
 
 $$T=\sum_{i=1}^{4} f_{i}=k \sum_{i=1}^{4} \omega_{i}^{2}, \quad \quad \boldsymbol{T}_{B}=\left[ \begin{array}{c}{0} \\ {0} \\ {T}\end{array}\right]$$
 
   \item The angular velocity and acceleration of the rotor also creates torque $\tau_{M_i}$ around the rotor axis: 
   $$I_{M} \dot{\omega}_{i} = \tau_{M_{i}} - b \omega_{i}^{2}$$
-  in which the lift constant is $k,$ the drag constant is $b$ and the inertia moment of the
+  in which the drag constant is $b$ and the inertia moment of the
 rotor is $I_{M}$. 
-
 Usually the acceleration of the rotor ($\dot{\omega}_{i}$) is considered small and thus it is omitted.
   This holds when we assume that the quadrotor is operating in stable flight and that the propellers are maintaining a constant thrust and not accelerating.
   This assumption results in the torque about the global z axis being equal to the torque due to drag.
@@ -150,10 +139,9 @@ $$\left[ \begin{array}{c}{\ddot{x}} \\ {\ddot{y}} \\ {\ddot{z}}\end{array}\right
 
 \subsubsection{Rotational dynamics}
 The rotational equations of motion are defined in the body frame so that the rotations can be computed about the quadrotor’s center and not the center of the global coordinate frame.
-
 Applying Euler's second law:
-$$\boldsymbol{I} \dot{\nu}+\boldsymbol{\nu} \times(\boldsymbol{I} \boldsymbol{\nu})+\mathbf{\Gamma}=\boldsymbol{\tau}$$
-where:
+$$\boldsymbol{I} \dot{\boldsymbol{\nu}}+\boldsymbol{\nu} \times(\boldsymbol{I} \boldsymbol{\nu})+\mathbf{\Gamma}=\boldsymbol{\tau}$$
+where we have:
 \begin{itemize}
   \item Angular acceleration of the inertia: $\boldsymbol{I\dot{v}}$
   \item Centripetal forces: $\boldsymbol{\nu}\times(\boldsymbol{I \nu})$
@@ -176,7 +164,7 @@ $$
   where $\omega_\Gamma = \omega_1 - \omega_2 + \omega_3 - \omega_4$, and $I_r$ is the rotor moment of inertia.
 
 
-The angular accelerations in world frame $\ddot{\boldsymbol{\eta}}$ are given by the time derivatives of the angular velocities $\left(\dot{\boldsymbol{\eta}} = \boldsymbol{W}_{\eta}^{-1} \boldsymbol{\nu}\right)$,
+The angular accelerations $\ddot{\boldsymbol{\eta}}$ in world frame are given by the time derivatives of the angular velocities $\left(\dot{\boldsymbol{\eta}} = \boldsymbol{W}_{\eta}^{-1} \boldsymbol{\nu}\right)$,
 
 $$\ddot{\boldsymbol{\eta}}=\frac{\mathrm{d}}{\mathrm{d} t}\left(\boldsymbol{W}_{\eta}^{-1} \boldsymbol{\nu}\right) =\frac{\mathrm{d}}{\mathrm{d} t}\left(\boldsymbol{W}_{\eta}^{-1}\right) \boldsymbol{\nu}+\boldsymbol{W}_{\eta}^{-1} \dot{\boldsymbol{\nu}} = $$
 
@@ -187,14 +175,13 @@ $$
 \end{array}
   $$
 
-At this point, it is common to do a simplification by setting $[\dot{\phi} \quad \dot{\theta} \quad \dot{\psi}]^{T}=\left[ \begin{array}{lll}{p} & {q} & {r}\end{array}\right]^{T}$, which holds true for small angles of movement \cite{Sabatino}.
+At this point, it is common to do a simplification by setting $[\dot{\phi} \quad \dot{\theta} \quad \dot{\psi}]^{T}=\left[ \begin{array}{lll}{p} & {q} & {r}\end{array}\right]^{T}$, which holds true for small angles of movement \cite{Sabatino2015}.
   Nevertheless, in this work we omit such a simplification.
 
 \subsection{Aerodynamic Drag}
+\label{ssec:drag}
 
-\begin{itemize}
-
-  \item We include the drag force generated by the air resistance. For this, we add a diagonal coefficient matrix that associates the linear velocities to the force slowing down the movement
+  We include the drag force generated by the air resistance. For this, we add a diagonal coefficient matrix that associates the linear velocities to the force slowing down the movement
 
   $$
     \begin{array}{l}
@@ -206,14 +193,12 @@ At this point, it is common to do a simplification by setting $[\dot{\phi} \quad
   in which $A_{x}, A_{y}$ and $A_{z}$ are the drag force coefficients for velocities in the corresponding directions of the inertial frame.
   Several other aerodynamical effects could be included in the model. For example,
 dependence of thrust on angle of attack, blade flapping and airflow disruptions.
-We refrain from adding these for simplicity.
-
-  \item We ignore rotational drag forces since we assume rotational velocities to be relatively low. Alternatively,
+We refrain from adding these for simplicity of the model.
+  We also ignore rotational drag forces since we assume rotational velocities to be small. Alternatively,
    we could add the components $\boldsymbol{\tau}_{\boldsymbol{w}}=\left[ \begin{array}{lll}{\tau_{w x}} & {\tau_{w y}} & {\tau_{w z}}\end{array}\right]^{T}$ to the overall torque.
 
-\end{itemize}
-
 \subsection{State-space Model}
+\label{ssec:state_space_model}
 
 We can write our nonlinear dynamics using the following state vector:
 
@@ -229,16 +214,20 @@ Moreover, we define our inputs as follow:
   results in a moment that rotates the quadrotor around the vertical $z$ axis.
 \end{itemize}
 
+This results in the control vector $U$ defined as:
 $$U=\left[ \begin{array}{l}{U_{1}} \\ {U_{2}} \\ {U_{3}} \\ {U_{4}}\end{array}\right]= \left[ \begin{array}{c}{T} \\ {\tau_{\phi}} \\ {\tau_{\theta}} \\ {\tau_{\psi}}\end{array}\right]=
 \left[ \begin{array}{c}
 {k \sum_{i=1}^{4} \omega_{i}^{2}} \\
 {l k\left(-\omega_{2}^{2}+\omega_{4}^{2}\right)} \\ 
 {l k\left(-\omega_{1}^{2}+\omega_{3}^{2}\right)} \\ 
 {b(\omega_{1}^{2}-\omega_{2}^{2}+\omega_{3}^{2}-\omega_{4}^{2})}\end{array}\right]
-$$
+.$$
 
 Our nonlinear dynamics can be written as a nonlinear differential equation of the states $\boldsymbol{X}$ and control inputs $\boldsymbol{U}$:
-$\dot{\boldsymbol{X}}=f(\boldsymbol{X}, \boldsymbol{U}).$
+\begin{equation}
+  \label{eq:dynamics}
+  \dot{\boldsymbol{X}}=f(\boldsymbol{X}, \boldsymbol{U}).
+\end{equation}
 
 Or, more precisely:
 $$
@@ -308,61 +297,36 @@ $$
 =f(\boldsymbol{X}, \boldsymbol{U})
 $$
 
+\subsection{Minimum Time Optimal Control Problem}
+\label{ssec:optimization_problem}
 
-\subsection{Simplifications}
-\label{ssec:frontend}
+\textbf{Cost}: our objective is to minimize the time taken for the drone to pass through all gates in a particular order.
+Therefore, the cost we try to minimize is simply the final time:
 
-The primary assumption made to simplify the model is that the quadrotor will be operated around a stable hover with small attitude angles and minimal rotational and translational velocities and accelerations.
-Since there are no aerodynamic lifting surfaces, we will assume that the aerodynamic forces and moments are negligible.
-The effects that are considered negligible are treated as disturbances in the control system and can be compensated for with appropriate control system design.
-These assumptions are described mathematically as well as the resulting simplified equations of motion.
-The equations below continue to reduce in complexity as more assumptions are made.
+$$J=\int_{t_{0}}^{t_{f}} d t = t_f$$
+where $t_0 = 0$ is fixed, but $t_f$ is free.
+We consider that the drone has finished the race once it has reached the last gate.
 
-$
-\left\{
-\begin{array}{l}
-  f_{t}=b\left(\Omega_{1}^{2}+\Omega_{2}^{2}+\Omega_{3}^{2}+\Omega_{4}^{2}\right) \\
-  \tau_{x}=b l\left(\Omega_{3}^{2}-\Omega_{1}^{2}\right) \\
-  \tau_{y}=b l\left(\Omega_{4}^{2}-\Omega_{2}^{2}\right) \\
-  \tau_{z}=d\left(\Omega_{2}^{2}+\Omega_{4}^{2}-\Omega_{1}^{2}-\Omega_{3}^{2}\right)
-\end{array}
-\right.
-$
+\textbf{Nonlinear Dynamics:} are formulated using the generic form: $\dot{x}(t)= f(x(t), u(t), t).$
 
-Define control inputs as:
+As detailed in \cref{eq:dynamics}, we make use of a nonlinear function of the state $\boldsymbol{X}(t)$ and the input $\boldsymbol{U}(t)$.
+Although the nonlinear function $f$ may depend explicitly on time $t$, the drone dynamics do not depend directly on $t$, therefore the time dependency can be dropped.
 
-$$U=\left[ \begin{array}{l}{U_{1}} \\ {U_{2}} \\ {U_{3}} \\ {U_{4}}\end{array}\right]=\left[ \begin{array}{c}{T_{1}+T_{2}+T_{3}+T_{4}} \\ {T_{4}-T_{2}} \\ {T_{3}-T_{1}} \\ {\left(T_{1}+T_{3}\right)-\left(T_{2}+T_{4}\right)}\end{array}\right]$$
-where $T_i=b\omega_{i}^2$ is the thrust force of propeller $i$.
+\textbf{Constraints:} to simulate a realistic drone we must constraint the control inputs to a range of possible values.
+\begin{itemize}
+  \item Generic input constraints can be formulated as: 
+  $$M_{i}^{-} \leq u_{i}(t) \leq M_{i}^{+},$$
+  where $M_{i}^{-}$ is the lower bound of control input $u_{i}(t)$, while $M_{i}^{+}$ is its upper bound.
+  In our case, we use the following bounds to the control inputs:
 
-  Using the following constants for simplifying the equations:
-$$a_{1}=\frac{I_{y y}-I_{z z}}{I_{x x}}, \quad a_{2}=\frac{I_{z z}-I_{x x}}{I_{y y}}, \quad a_{3}=\frac{I_{x x}-I_{y y}}{I_{z z}}$$
 
-$$b_{1}=\frac{l}{I_{x x}}, \quad b_{2}=\frac{l}{I_{y y}}, \quad b_{3}=\frac{l}{I_{z z}}$$
+  \item Path constraints:
+  $$\forall t \quad t_{0} \leq t \leq t_{f}, \quad \quad c(x(t), u(t), t) \leq 0,$$
+\end{itemize}
 
-We get:
-
-$$
-\left[ \begin{array}{l}
-\ddot{\phi} \\ \ddot{\theta} \\ \ddot{\psi} 
-\end{array} \right] = 
-\left[ \begin{array}{l}
-\frac{I_{yy}-I_{zz}}{I_{xx}} \dot{\theta} \dot{\psi} + \frac{\tau_{x}}{I_{xx}} \\ 
-\frac{I_{zz}-I_{xx}}{I_{yy}} \dot{\phi} \dot{\psi} + \frac{\tau_{y}}{I_{yy}} \\
-\frac{I_{xx}-I_{yy}}{I_{zz}} \dot{\phi} \dot{\theta} + \frac{\tau_{z}}{I_{zz}} 
-\end{array}\right]
-=
-\left[ \begin{array}{l}
-a_1 \dot{\theta} \dot{\psi} + b_1 u_2 \\ 
-a_2 \dot{\phi} \dot{\psi} + b_2 u_3 \\
-a_3 \dot{\phi} \dot{\theta} + b_3 u_4
-\end{array}\right]
-$$
-
-Using these together with the absolute acceleration above:
-
-$$\left[ \begin{array}{c}{\ddot{x}} \\ {\ddot{y}} \\ {\ddot{z}}\end{array}\right]=-g \left[ \begin{array}{l}{0} \\ {0} \\ {1}\end{array}\right]+\frac{T}{m} \left[ \begin{array}{c}{C_{\psi} S_{\theta} C_{\phi}+S_{\psi} S_{\phi}} \\ {S_{\psi} S_{\theta} C_{\phi}-C_{\psi} S_{\phi}} \\ {C_{\theta} C_{\phi}}\end{array}\right]$$
-
-\subsubsection{Calculus of Variations}
-\label{sssec:3d_mesh_generation}
-
-\subsubsection{3D Mesh Propagation}
+\textbf{Boundary Conditions:}
+Given 
+\begin{itemize}
+  \item Initial: $n(x(t_{0}), t_{0}) = 0$
+  \item Final: $m(x(t_{f}), t_{f}) = 0$
+\end{itemize}

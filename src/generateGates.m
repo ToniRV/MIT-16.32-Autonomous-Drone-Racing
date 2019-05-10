@@ -9,13 +9,13 @@ function gates = generateGates()
         gates(g).order = g;
 
         % Gate size
-        gates(g).size         = [0.1 0.1]; % Height, Width
+        gates(g).radius           = 0.5; % Height, Width
 
         % Tolerances
         gates(g).time_tol         = 10;
         gates(g).position_tol     = 0.1;
         gates(g).velocity_tol     = 10;
-        gates(g).orientation_tol  = pi/2; % NOT SURE psi is pi to -pi
+        gates(g).orientation_tol  = pi/8; % NOT SURE psi is pi to -pi
         gates(g).spin_tol         = 50*(2*pi/360); % angular velocity
     end
 
@@ -44,7 +44,7 @@ function gates = generateGates()
     %% GATE 2
     gates(2).position    = [0, 0, 1];
     gates(2).velocity    = zeros(1, 3);
-    gates(2).orientation = zeros(1, 3);
+    gates(2).orientation = zeros(1, 3); % must be normalized...
     gates(2).spin        = zeros(1, 3);
 
     gates(2).guess_time = 1;
