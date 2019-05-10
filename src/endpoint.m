@@ -28,7 +28,8 @@ if N_phases > 1
         % Eventgroups
         output.eventgroup(p).event = [xf{p} - x0{p+1},...
                                       tf{p} - t0{p+1},...
-                                      dot(xf{p}(4:6), gates(p).normal)];
+                                      dot(normalize(xf{p}(4:6), 'norm'),...
+                                          gates(p).normal)];
     end
 end
     

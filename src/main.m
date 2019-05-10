@@ -73,8 +73,6 @@ x_max = [Quad.X_max Quad.Y_max Quad.Z_max ...
 u_min = [Quad.U1_min Quad.U2_min Quad.U3_min Quad.U4_min];
 u_max = [Quad.U1_max Quad.U2_max Quad.U3_max Quad.U4_max];
 
-dot_prod_vel_normal_tol = 0.2;
-
 for p = 1:N_phases
     %% Time
     % Fixed initial time for all phases...
@@ -106,7 +104,7 @@ for p = 1:N_phases
     %% Eventgroup constraints
     if p < N_phases
         N_states = length(fieldnames(Quad.State));
-        bounds.eventgroup(p).lower = [zeros(1, N_states + 1), dot_prod_vel_normal_tol]; % +1 for time
+        bounds.eventgroup(p).lower = [zeros(1, N_states + 1), gates(p).vel_normal_tol]; % +1 for time
         bounds.eventgroup(p).upper = [zeros(1, N_states + 1), 1.01]; % should be 1.0.
     end
 end
@@ -182,6 +180,7 @@ initPlot;
 plotQuadModel;
 
 plotGates(gates);
+plotVelocityCones(gates);
 
 for p = 1:N_phases
     for idx = 1:size(solution.phase(p).state, 1)
@@ -193,7 +192,7 @@ for p = 1:N_phases
         
         % Plot Quad
         plotQuad
-        %pause(0.1)
+        pause(0.1)
         drawnow
     end
 end

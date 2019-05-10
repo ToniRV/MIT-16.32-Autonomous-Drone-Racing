@@ -309,41 +309,52 @@ $$\dot{\mathbf{x}}^{(p)}=\mathbf{a}^{(p)}\left[\mathbf{x}^{(p)}, \mathbf{u}^{(p)
 \textbf{Cost}: our objective is to minimize the time taken for the drone to pass through all gates in a particular order.
 Therefore, the cost we try to minimize is simply the final time:
 
-$$J=\int_{t_{0}}^{t_{f}} d t = t_f$$
+$$J= \sum_{p}\int_{t^{(p)}_0}^{t^{(p)}_f} d t =\int_{t_{0}}^{t_{f}} d t = t_f$$
 where $t_0 = 0$ is fixed, but $t_f$ is free.
 We consider that the drone has finished the race once it has reached the last gate.
 
 \textbf{Nonlinear Dynamics:} are formulated using the generic form: $\dot{x}(t)= f(x(t), u(t), t).$
-
 As detailed in \cref{eq:dynamics}, we make use of a nonlinear function of the state $\boldsymbol{X}(t)$ and the input $\boldsymbol{U}(t)$.
 Although the nonlinear function $f$ may depend explicitly on time $t$, the drone dynamics do not depend directly on $t$, therefore the time dependency can be dropped.
 
-\textbf{Phases}
-The racetrack is constructed in a piecewise fashion, using phases, where each phase spans from one gate to the next one.
+\textbf{Phases:}
+the racetrack is constructed in a piecewise fashion using phases, where each phase spans from one gate to the next one.
+Therefore, we consider as many phases as there are gates in the racetrack.
 
-\TODO{Bounds vs Constraints!}
-
-\textbf{Constraints:} to simulate a realistic drone we must constraint the control inputs to a range of possible values.
+\textbf{Bounds:} to simulate a realistic drone we must constraint the control inputs to a range of possible values.
 \begin{itemize}
-  \item Input Constraints: generic input constraints can be formulated as: 
+  \item Input Bounds: generic input constraints can be formulated as: 
   $$M_{i}^{-} \leq U_{i}(t) \leq M_{i}^{+},$$
   where $M_{i}^{-}$ is the lower bound of control input $U_{i}(t)$, while $M_{i}^{+}$ is its upper bound.
-  In our case, we use the bounds in \cref{tab:control_bounds}.
+  In our case, we use the bounds in \cref{tab:control_bounds}, which were calculated using the following heuristics.
+  For bounds on $U_1$ input (thrust) the minimum bound is $0$ since we consider that the quadcopter has fixed-pitch propellers.
+  With a variable pitch propeller, one may expect the thrust to be negative as well.
+  The upper bound is calculated as $4 k \omega_{\text{max}}^{2}$, where $k$ is the lift constant and $\omega_{\text{max}}$ is the maximum motor speed.
+  For $U_2, U_3$ upper and lower bounds we use $\pm 4 k l \omega_{\text{max}}^{2}$, where $l$ is the quadrotor's arm length.
+  Similarly, for the yaw component $U_4$, we use  $\pm 2 k l \omega_{\text{max}}^{2}$.
   \begin{table}[htbp]
     \center
     \begin{tabular}{|c|c|c|c|}
       \hline 
       Input & Definition & $M_i^{-}$ & $M_i^{+}$ \\
       \hline 
-      {$U_1$} & {Thrust} & 0.0 & 43.7 \\
-      {$U_2$} & {Roll rate} & & \\
-      {$U_3$} & {Pitch rate} & & \\
-      {$U_4$} & {Yaw rate} & & \\
+      {$U_1$} & {Thrust} & 0.0 & 43.5 \\
+      {$U_2$} & {Roll rate} & -6.25 & 6.25 \\
+      {$U_3$} & {Pitch rate} & -6.25 & 6.25\\
+      {$U_4$} & {Yaw rate} & -2.25 & 2.25\\
       \hline
     \end{tabular}
     \caption{Constraints on control inputs.}
     \label{tab:control_bounds}
   \end{table}
+%  Quad.U1_max = 43.5;   % Quad.KT*4*Quad.max_motor_speed^2
+%Quad.U1_min = 0;      %
+%Quad.U2_max = 6.25;  % Quad.KT*Quad.l*Quad.max_motor_speed^2
+%Quad.U2_min = -6.25; % Quad.KT*Quad.l*Quad.max_motor_speed^2
+%Quad.U3_max = 6.25;  % Quad.KT*Quad.l*Quad.max_motor_speed^2
+%Quad.U3_min = -6.25; % Quad.KT*Quad.l*Quad.max_motor_speed^2
+%Quad.U4_max = 2.25; % Quad.Kd*2*Quad.max_motor_speed^2
+%Quad.U4_min = -2.25;% Quad.Kd*2*Quad.max_motor_speed^2
 
   \item State Constraints: 
 
