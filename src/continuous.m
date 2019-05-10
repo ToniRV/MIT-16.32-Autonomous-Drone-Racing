@@ -8,7 +8,7 @@ function phaseout = continuous(input)
 % - integrands (if any)
 global Quad;
 
-N_phases = input.auxdata;
+N_phases = input.auxdata.N_phases;
 
 for p = 1:N_phases
     %% Simulate dynamics

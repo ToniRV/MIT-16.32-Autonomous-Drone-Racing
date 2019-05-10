@@ -14,7 +14,7 @@ The state-space formulation allows us to present in a compact form the optimizat
 
 The absolute position $\boldsymbol{\xi}$ of the drone is given in an Euclidean inertial frame, referred to as \textit{world frame} ($G$), by: $x, y, z$.
 This corresponds to the 3D coordinates of the center of mass of the drone.
-The attitude $\boldsymbol{\eta}$ of the drone with respect to the world frame is given using Euler angles: pitch $\theta$, roll $\phi$, and yaw $\psi$.
+The attitude $\boldsymbol{\eta}$ of the drone with respect to the world frame is given using Euler angles: roll $\phi$, pitch $\theta$ and yaw $\psi$.
 
 $$\boldsymbol{\xi}=\left[ \begin{array}{l}{x} \\ {y} \\ {z}\end{array}\right],
  \quad \boldsymbol{\eta}=\left[ \begin{array}{l}{\phi} \\ {\theta} \\ {\psi}\end{array}\right]$$
@@ -297,8 +297,14 @@ $$
 =f(\boldsymbol{X}, \boldsymbol{U})
 $$
 
-\subsection{Minimum Time Optimal Control Problem}
+\section{Minimum Time Optimal Control Problem}
 \label{ssec:optimization_problem}
+
+A P-phase optimal control problem can be stated in the following general form.
+ Determine the state
+$\mathbf{x}^{(p)}(t) \in \mathbb{R}^{n(p)},$ control, $\mathbf{u}^{(p)}(t) \in \mathbb{R}^{n(t)},$ initial time, $t_{0}^{(p)} \in \mathbb{R},$ final time, $t_{f}^{(p)} \in \mathbb{R},$
+in each phase $p \in[1, \ldots, P],$ that minimize a given cost functional, subject to dynamic constraints:
+$$\dot{\mathbf{x}}^{(p)}=\mathbf{a}^{(p)}\left[\mathbf{x}^{(p)}, \mathbf{u}^{(p)}, t^{(p)}\right], \quad(p=1, \ldots, P)$$
 
 \textbf{Cost}: our objective is to minimize the time taken for the drone to pass through all gates in a particular order.
 Therefore, the cost we try to minimize is simply the final time:
@@ -312,21 +318,43 @@ We consider that the drone has finished the race once it has reached the last ga
 As detailed in \cref{eq:dynamics}, we make use of a nonlinear function of the state $\boldsymbol{X}(t)$ and the input $\boldsymbol{U}(t)$.
 Although the nonlinear function $f$ may depend explicitly on time $t$, the drone dynamics do not depend directly on $t$, therefore the time dependency can be dropped.
 
+\textbf{Phases}
+The racetrack is constructed in a piecewise fashion, using phases, where each phase spans from one gate to the next one.
+
+\TODO{Bounds vs Constraints!}
+
 \textbf{Constraints:} to simulate a realistic drone we must constraint the control inputs to a range of possible values.
 \begin{itemize}
-  \item Generic input constraints can be formulated as: 
-  $$M_{i}^{-} \leq u_{i}(t) \leq M_{i}^{+},$$
-  where $M_{i}^{-}$ is the lower bound of control input $u_{i}(t)$, while $M_{i}^{+}$ is its upper bound.
-  In our case, we use the following bounds to the control inputs:
+  \item Input Constraints: generic input constraints can be formulated as: 
+  $$M_{i}^{-} \leq U_{i}(t) \leq M_{i}^{+},$$
+  where $M_{i}^{-}$ is the lower bound of control input $U_{i}(t)$, while $M_{i}^{+}$ is its upper bound.
+  In our case, we use the bounds in \cref{tab:control_bounds}.
+  \begin{table}[htbp]
+    \center
+    \begin{tabular}{|c|c|c|c|}
+      \hline 
+      Input & Definition & $M_i^{-}$ & $M_i^{+}$ \\
+      \hline 
+      {$U_1$} & {Thrust} & 0.0 & 43.7 \\
+      {$U_2$} & {Roll rate} & & \\
+      {$U_3$} & {Pitch rate} & & \\
+      {$U_4$} & {Yaw rate} & & \\
+      \hline
+    \end{tabular}
+    \caption{Constraints on control inputs.}
+    \label{tab:control_bounds}
+  \end{table}
 
+  \item State Constraints: 
 
-  \item Path constraints:
-  $$\forall t \quad t_{0} \leq t \leq t_{f}, \quad \quad c(x(t), u(t), t) \leq 0,$$
 \end{itemize}
 
 \textbf{Boundary Conditions:}
+
 Given 
 \begin{itemize}
   \item Initial: $n(x(t_{0}), t_{0}) = 0$
   \item Final: $m(x(t_{f}), t_{f}) = 0$
 \end{itemize}
+
+\textbf{Initial Conditions}

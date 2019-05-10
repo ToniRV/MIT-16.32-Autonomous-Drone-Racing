@@ -55,6 +55,10 @@ initState;
 
 gates = generateGates();
 N_phases = length(gates) - 1;
+
+% Create auxdata
+auxdata.gates = gates;
+auxdata.N_phases = N_phases;
                                     
 x_min = [Quad.X_min Quad.Y_min Quad.Z_min ...
          Quad.X_dot_min Quad.Y_dot_min Quad.Z_dot_min ...
@@ -68,6 +72,8 @@ x_max = [Quad.X_max Quad.Y_max Quad.Z_max ...
 
 u_min = [Quad.U1_min Quad.U2_min Quad.U3_min Quad.U4_min];
 u_max = [Quad.U1_max Quad.U2_max Quad.U3_max Quad.U4_max];
+
+dot_prod_vel_normal_tol = 0.2;
 
 for p = 1:N_phases
     %% Time
@@ -100,8 +106,8 @@ for p = 1:N_phases
     %% Eventgroup constraints
     if p < N_phases
         N_states = length(fieldnames(Quad.State));
-        bounds.eventgroup(p).lower = zeros(1, N_states + 1); % +1 for time.
-        bounds.eventgroup(p).upper = zeros(1, N_states + 1); % +1 for time.
+        bounds.eventgroup(p).lower = [zeros(1, N_states + 1), dot_prod_vel_normal_tol]; % +1 for time
+        bounds.eventgroup(p).upper = [zeros(1, N_states + 1), 1.01]; % should be 1.0.
     end
 end
 
@@ -109,13 +115,6 @@ end
 %-------------------------------------------------------------------------%
 %---------------------- Provide Guess of Solution ------------------------%
 %-------------------------------------------------------------------------%
-
-% straight_lines_guess = 1;
-% if straight_lines_guess
-%     for p = 1:N_gates
-%         gate_to_gate_dist = gates(p + 1).position - gates(p).position;
-%     end
-% end
 
 for p = 1:N_phases
     guess.phase(p).time    = [gates(p).guess_time; gates(p + 1).guess_time];
@@ -144,7 +143,7 @@ setup.functions.continuous           = @continuous;
 setup.functions.endpoint             = @endpoint;
 setup.bounds                         = bounds;
 setup.guess                          = guess;
-setup.auxdata                        = N_phases;
+setup.auxdata                        = auxdata;
 setup.nlp.solver                     = 'ipopt';
 setup.nlp.ipoptoptions.linear_solver = 'ma57';
 setup.derivatives.supplier           = 'sparseCD';

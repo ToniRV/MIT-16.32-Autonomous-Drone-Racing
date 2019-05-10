@@ -1,5 +1,5 @@
 %-------------------------------------------%
-% BEGIN: function minCurveEndpoint.m %
+% BEGIN: function endpoint.m %
 %-------------------------------------------%
 function output = endpoint(input)
 % Endpoint function returns discrete values
@@ -9,7 +9,8 @@ function output = endpoint(input)
 % ? state continuity across phases
 % ? isoperimetric constraints
 
-N_phases = input.auxdata;
+N_phases = input.auxdata.N_phases;
+gates = input.auxdata.gates;
 
 if N_phases > 1
     % Connect all phases together
@@ -26,18 +27,16 @@ if N_phases > 1
     for p = 1:N_phases - 1
         % Eventgroups
         output.eventgroup(p).event = [xf{p} - x0{p+1},...
-                                      tf{p} - t0{p+1}];
+                                      tf{p} - t0{p+1},...
+                                      dot(xf{p}(4:6), gates(p).normal)];
     end
 end
     
 output.objective = input.phase(end).finaltime;
-% output.objective = input.phase(1).integral + ...
-%                    input.phase(2).integral + ...
-%                    input.phase(3).integral;
 end
 
 
 %-------------------------------------------%
-% END: function minCurveEndpoint.m   %
+% END: function endpoint.m   %
 %-------------------------------------------%
 

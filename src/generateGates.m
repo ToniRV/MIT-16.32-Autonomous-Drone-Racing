@@ -15,6 +15,7 @@ function gates = generateGates()
         gates(g).time_tol         = 10;
         gates(g).position_tol     = 0.1;
         gates(g).velocity_tol     = 10;
+        % This must be actually set smartly!
         gates(g).orientation_tol  = pi/8; % NOT SURE psi is pi to -pi
         gates(g).spin_tol         = 50*(2*pi/360); % angular velocity
     end
@@ -22,6 +23,8 @@ function gates = generateGates()
     u_hover = [13.7, 0, 0, 0];
 
     %% GATE 1
+    % Drone states:
+    gates(1).normal      = [0, 0, 1];
     gates(1).position    = zeros(1, 3);
     gates(1).velocity    = zeros(1, 3);
     gates(1).orientation = zeros(1, 3);
@@ -42,10 +45,12 @@ function gates = generateGates()
     gates(1).guess_control = u_hover;
 
     %% GATE 2
+    gates(2).normal      = [0, 0, 1];
     gates(2).position    = [0, 0, 1];
-    gates(2).velocity    = zeros(1, 3);
+    gates(2).velocity    = gates(2).normal;
     gates(2).orientation = zeros(1, 3); % must be normalized...
     gates(2).spin        = zeros(1, 3);
+    
 
     gates(2).guess_time = 1;
     gates(2).time_min   = 0;
@@ -55,6 +60,10 @@ function gates = generateGates()
                             gates(2).velocity, ...
                             gates(2).orientation, ...
                             gates(2).spin];
+    % The velocity dot normal must be higher than a threshold.
+    % How does this translate into a tol constraint in 3D?
+    % v_x * n_x + v_y * n_y + v_z * n_z > 0.2
+    % 
     gates(2).state_min = [gates(2).position    - gates(2).position_tol, ...
                           gates(2).velocity    - gates(2).velocity_tol, ...
                           gates(2).orientation - gates(2).orientation_tol, ...
@@ -67,8 +76,9 @@ function gates = generateGates()
     gates(2).guess_control = u_hover;
 
     %% GATE 3
+    gates(3).normal      = [0, 0, 1];
     gates(3).position    = [0, 2, 2];
-    gates(3).velocity    = zeros(1, 3);
+    gates(3).velocity    = gates(3).normal;
     gates(3).orientation = zeros(1, 3);
     gates(3).spin        = zeros(1, 3);
 
@@ -92,10 +102,12 @@ function gates = generateGates()
     gates(3).guess_control = u_hover;
 
     %% GATE 4
+    gates(4).normal      = [0, 0, 1];
     gates(4).position    = [1, 3, 1];
-    gates(4).velocity    = zeros(1, 3);
+    gates(4).velocity    = gates(4).normal;
     gates(4).orientation = zeros(1, 3);
     gates(4).spin        = zeros(1, 3);
+    
 
     gates(4).guess_time = 3;
     gates(4).time_min   = 0;
@@ -117,10 +129,12 @@ function gates = generateGates()
     gates(4).guess_control = u_hover;
 
     %% GATE 5
+    gates(5).normal      = [0, 0, 1];
     gates(5).position    = [2, 1, 2];
-    gates(5).velocity    = zeros(1, 3);
+    gates(5).velocity    = gates(5).normal;
     gates(5).orientation = zeros(1, 3);
     gates(5).spin        = zeros(1, 3);
+    gates(5).normal      = angle2rod(0, 0, 0);
 
     gates(5).guess_time = 4;
     gates(5).time_min   = 0;
