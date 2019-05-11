@@ -61,6 +61,8 @@ min_pos = min_pos - state_tol;
 
 %% 
 gates = generateGates(); % Currently does not use parsed gates...
+
+%%
 N_phases = length(gates) - 1;
 
 % Create auxdata
@@ -188,9 +190,7 @@ axis_limits = [Quad.X_min Quad.X_max ...
                Quad.Y_min Quad.Y_max ...
                Quad.Z_min Quad.Z_max];
 initPlot(axis_limits);
-
 plotQuadModel;
-
 plotGates(gates);
 plotVelocityCones(gates);
 
@@ -217,8 +217,7 @@ for p = 1:N_phases
         % Plot velocity
         set(h, 'Xdata', Quad.State.X, 'Ydata', Quad.State.Y, 'Zdata', Quad.State.Z,...
                'Udata', Quad.State.X_dot, 'Vdata', Quad.State.Y_dot, 'Wdata', Quad.State.Z_dot);
-           % Plot trajectory
-        %plot3(Quad.State.X, Quad.State.Y, Quad.State.Z, '*r');
+        % Plot trajectory
         drawnow
         
         % Record video.
@@ -226,7 +225,7 @@ for p = 1:N_phases
         writeVideo(v,frame);
     end
 end
-
+hold off;
 close(v);
 
 %%
