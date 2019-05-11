@@ -5,6 +5,7 @@ clc;
 
 % Addpaths
 addpath utilities
+addpath config
 
 %-------------------------------------------------------------------------%
 %------------- Provide and Set Up Quadcopter -----------------------------%
@@ -199,10 +200,17 @@ h = quiver3(0,0,0,0,0,0);
 
 % Setup video recording
 axis tight manual 
-set(gca,'nextplot','replacechildren'); 
-v = VideoWriter('peaks.avi');
-open(v);
+record_video = 0;
+if record_video == 1
+    set(gca,'nextplot','replacechildren'); 
+    v = VideoWriter('peaks.avi');
+    open(v);
+end
 
+        acc_state_x = [0];
+        acc_state_y = [0];
+        acc_state_z = [0];
+        acc_time = [0];
 for p = 1:N_phases
     for idx = 1:size(solution.phase(p).state, 1)
         % Convert solution state to list of Quad.State
@@ -217,16 +225,32 @@ for p = 1:N_phases
         % Plot velocity
         set(h, 'Xdata', Quad.State.X, 'Ydata', Quad.State.Y, 'Zdata', Quad.State.Z,...
                'Udata', Quad.State.X_dot, 'Vdata', Quad.State.Y_dot, 'Wdata', Quad.State.Z_dot);
+        %plot3(Quad.State.X,Quad.State.Y,Quad.State.Z,'*r');
         % Plot trajectory
         drawnow
         
+        acc_state_x = [acc_state_x, Quad.State.X];
+        acc_state_y = [acc_state_y, Quad.State.Y];
+        acc_state_z = [acc_state_z, Quad.State.Z];
+        acc_time = [acc_time, solution.phase(p).time(idx)];
+        
         % Record video.
-        frame = getframe(gcf);
-        writeVideo(v,frame);
+        if record_video == 1
+            frame = getframe(gcf);
+            writeVideo(v,frame);
+        end
     end
 end
+
+
+scatter3(acc_state_x,acc_state_y,acc_state_z,10,acc_time, 'LineWidth', 5)
+colorbar
+
 hold off;
-close(v);
+
+if record_video == 1
+    close(v);
+end
 
 %%
 

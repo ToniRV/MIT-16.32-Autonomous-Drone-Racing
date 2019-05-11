@@ -3,6 +3,13 @@
 \section{Approach}
 \label{sec:mathematical_formulation}
 
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\linewidth]{img/DroneRaceTrajectoryOpt.png}
+  \caption{Optimized minimum time drone trajectory through a 6-gate drone racing track. The trajectory is color-coded by time $[s]$.}
+  \label{fig:optimized_trajectory}
+\end{figure}
+
 We formulate our drone race optimization problem as a minimum time optimal control problem with nonlinear dynamics and constraints.
 Therefore, we must define both the dynamics of a drone and the constraints to pass through each gate.
 \Cref{ssec:model}, \ref{ssec:dynamics} and \ref{ssec:drag} present the nonlinear dynamics for a quadcopter.
@@ -389,4 +396,4 @@ Similarly, both linear velocities and angular rates are left virtually free by s
 \subsection{Initial Guess}
 Our initial guess for the states at the initial and final times for each phase are straightforward.
 We assume that the drone takes about a second to go from gate to gate, as all gates are approximately at the same distance.
-Moreover, we assume that the state of the quadcopter is at the center of each gate, and that the control input is such that the drone is hovering.
+Moreover, we assume that the position of the quadcopter is at the center of each gate, and that the control input is such that the drone is hovering.
