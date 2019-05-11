@@ -24,6 +24,7 @@ function gates = generateGates()
 
     gates(2).guess_control = u_hover;
 
+    
     %% GATE 3
     gates(3).normal      = normalize([1, 1, 0], 'norm');
     gates(3).position    = [1, 2, 2];
@@ -32,6 +33,7 @@ function gates = generateGates()
     gates(3).guess_time = 2;
 
     gates(3).guess_control = u_hover;
+    
 
     %% GATE 4
     gates(4).normal      = normalize([0, 0, -1], 'norm');
@@ -59,10 +61,8 @@ function gates = generateGates()
     gates(6).guess_time = 5;
 
     gates(6).guess_control = u_hover;
+    %}
     
-    
-
-
     %% Setup common gates properties.
     for g = 1:length(gates) % + 1 for start gate
         % Id

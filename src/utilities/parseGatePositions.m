@@ -14,7 +14,7 @@ function [gates, max_pos, min_pos] = parseGatePositions()
 %   perturbation_bound: [2.5, 2.5, 5.0]
 
     % Parse gate's positions:
-    X = YAML.read("./config/gate_locations.yaml");
+    X = YAML.read("./src/config/gate_locations.yaml");
     fn = fieldnames(X);
     max_pos = -inf * ones(1,3);
     min_pos = inf * ones(1,3);

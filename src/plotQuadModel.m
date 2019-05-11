@@ -11,6 +11,7 @@
 global Quad
 
 load Quad_plotting_model
+Quad.QuadModel = QuadModel;
 
 Quad.X_arm  = patch('xdata', QuadModel.X_armX, ...
                     'ydata', QuadModel.X_armY, ...
