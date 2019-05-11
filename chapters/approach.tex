@@ -6,7 +6,7 @@
 \begin{figure}[tbp]
   \centering
   \includegraphics[width=\linewidth]{img/DroneRaceTrajectoryOpt.png}
-  \caption{Optimized minimum time drone trajectory through a 6-gate drone racing track. The trajectory is color-coded by time $[s]$.}
+  \caption{Optimized minimum time drone trajectory through a 6-gate drone racing track. The trajectory is color-coded by time $[s]$. Red circles represent the 3D gates that must be traversed.}
   \label{fig:optimized_trajectory}
 \end{figure}
 
@@ -157,7 +157,13 @@ where we have:
 \end{itemize}
 
 Replacing terms by their definitions, multiplying both sides by $\boldsymbol{I}^{-1}$, and rearranging:
-$$\boldsymbol{\dot{\nu}}=\boldsymbol{I}^{-1}\left(-\left[ \begin{array}{c}{p} \\ {q} \\ {r}\end{array}\right] \times \left[ \begin{array}{c}{I_{x x} p} \\ {I_{y y} q} \\ {I_{z z} r}\end{array}\right]-I_{r} \left[ \begin{array}{c}{p} \\ {q} \\ {r}\end{array}\right] \times \left[ \begin{array}{c}{0} \\ {0} \\ {1}\end{array}\right] \omega_{\Gamma}+\boldsymbol{\tau}_B\right)$$
+
+$$
+\begin{array}{c}
+  \boldsymbol{\dot{\nu}}=\boldsymbol{I}^{-1}\left(-\left[ \begin{array}{c}{p} \\ {q} \\ {r}\end{array}\right] \times \left[ \begin{array}{c}{I_{x x} p} \\ {I_{y y} q} \\ {I_{z z} r}\end{array}\right]\right.\\
+   -I_{r} \left[ \begin{array}{c}{p} \\ {q} \\ {r}\end{array}\right] \times \left[ \begin{array}{c}{0} \\ {0} \\ {1}\end{array}\right] \omega_{\Gamma}+\boldsymbol{\tau}_B
+\end{array}
+$$
 
 $$
 \begin{array}{c}
