@@ -384,6 +384,8 @@ In order to simulate a realistic drone we must constraint the control inputs to 
 
 Initial conditions for the quadcopter at the start of the first phase are such that the quadcopter is at rest (no linear or angular velocities), and positioned at the first gate.
 For the rest of the phases, the initial conditions are set such that the drone is centered at the gate, with a small tolerance of $0.01m$, and with an arbitrary orientation.
-Similarly, both linear velocities and angular rates are left loosely bounded.
+Similarly, both linear velocities and angular rates are left virtually free by setting loose bounded.
 
 \subsection{Initial Guess}
+Our initial guess for the states at the initial and final times for each phase are straightforward.
+We assume that the drone takes about a second to go from gate to gate, as all gates are approximately at the same distance.

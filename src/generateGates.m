@@ -17,7 +17,7 @@ function gates = generateGates()
 
     %% GATE 2
     gates(2).normal      = normalize([0, 1, 1], 'norm');
-    gates(2).position    = [-1, 2, 2];
+    gates(2).position    = [0, 1, 1];
     gates(2).velocity    = gates(2).normal;
 
     gates(2).guess_time = 1;
@@ -25,8 +25,8 @@ function gates = generateGates()
     gates(2).guess_control = u_hover;
 
     %% GATE 3
-    gates(3).normal      = normalize([1, 1, 0], 'norm');
-    gates(3).position    = [2, 2, 2];
+    gates(3).normal      = [1, 1, 0];
+    gates(3).position    = [1, 2, 2];
     gates(3).velocity    = gates(3).normal;
 
     gates(3).guess_time = 2;
@@ -34,7 +34,7 @@ function gates = generateGates()
     gates(3).guess_control = u_hover;
 
     %% GATE 4
-    gates(4).normal      = normalize([0, 0, -1], 'norm');
+    gates(4).normal      = [0, 0, -1];
     gates(4).position    = [1, 3, 1];
     gates(4).velocity    = gates(4).normal;
 
@@ -43,7 +43,7 @@ function gates = generateGates()
     gates(4).guess_control = u_hover;
 
     %% GATE 5
-    gates(5).normal      = normalize([1, -1, 0], 'norm');
+    gates(5).normal      = [1, -1, 0];
     gates(5).position    = [2, 1, 0];
     gates(5).velocity    = gates(5).normal;
 

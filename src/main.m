@@ -218,7 +218,7 @@ for p = 1:N_phases
         set(h, 'Xdata', Quad.State.X, 'Ydata', Quad.State.Y, 'Zdata', Quad.State.Z,...
                'Udata', Quad.State.X_dot, 'Vdata', Quad.State.Y_dot, 'Wdata', Quad.State.Z_dot);
            % Plot trajectory
-        plot3(Quad.State.X, Quad.State.Y, Quad.State.Z, '*r');
+        %plot3(Quad.State.X, Quad.State.Y, Quad.State.Z, '*r');
         drawnow
         
         % Record video.
