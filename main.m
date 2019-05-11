@@ -1,5 +1,6 @@
 %------------------------- Drone Race Problem ----------------------------%
 %-------------------------------------------------------------------------%
+clear all;
 close all; 
 clc;
 
@@ -66,6 +67,7 @@ gates = generateGates(); % Currently does not use parsed gates...
 
 %%
 N_phases = length(gates) - 1;
+N_states = length(fieldnames(Quad.State));
 
 % Create auxdata
 auxdata.gates = gates;
@@ -114,7 +116,6 @@ for p = 1:N_phases
 
     %% Eventgroup constraints
     if p < N_phases
-        N_states = length(fieldnames(Quad.State));
         % We have a +1 to account for time, and the last component is to
         % force the drone to traverse the gate
         bounds.eventgroup(p).lower = [zeros(1, N_states + 1), gates(p).vel_normal_tol]; 
