@@ -52,8 +52,15 @@ initState;
 %-------------------------------------------------------------------------%
 %------------- Provide and Set Up All Bounds for Problem -----------------%
 %-------------------------------------------------------------------------%
+%% Parse gates
+[gates_data, max_pos, min_pos] = parseGatePositions();
 
-gates = generateGates();
+state_tol = 2; % meters
+max_pos = max_pos + state_tol;
+min_pos = min_pos - state_tol;
+
+%% 
+gates = generateGates(); % Currently does not use parsed gates...
 N_phases = length(gates) - 1;
 
 % Create auxdata
@@ -104,8 +111,10 @@ for p = 1:N_phases
     %% Eventgroup constraints
     if p < N_phases
         N_states = length(fieldnames(Quad.State));
-        bounds.eventgroup(p).lower = [zeros(1, N_states + 1), gates(p).vel_normal_tol]; % +1 for time
-        bounds.eventgroup(p).upper = [zeros(1, N_states + 1), 1.01]; % should be 1.0.
+        % We have a +1 to account for time, and the last component is to
+        % force the drone to traverse the gate
+        bounds.eventgroup(p).lower = [zeros(1, N_states + 1), gates(p).vel_normal_tol]; 
+        bounds.eventgroup(p).upper = [zeros(1, N_states + 1), 1.0];
     end
 end
 
@@ -175,12 +184,24 @@ plotControls(N_phases, solution, Quad);
 
 %% Initialize the plot
 hold off;
-initPlot;
+axis_limits = [Quad.X_min Quad.X_max ...
+               Quad.Y_min Quad.Y_max ...
+               Quad.Z_min Quad.Z_max];
+initPlot(axis_limits);
 
 plotQuadModel;
 
 plotGates(gates);
 plotVelocityCones(gates);
+
+% Plot velocity vector
+h = quiver3(0,0,0,0,0,0);
+
+% Setup video recording
+axis tight manual 
+set(gca,'nextplot','replacechildren'); 
+v = VideoWriter('peaks.avi');
+open(v);
 
 for p = 1:N_phases
     for idx = 1:size(solution.phase(p).state, 1)
@@ -192,7 +213,22 @@ for p = 1:N_phases
         
         % Plot Quad
         plotQuad
-        pause(0.1)
+        
+        % Plot velocity
+        set(h, 'Xdata', Quad.State.X, 'Ydata', Quad.State.Y, 'Zdata', Quad.State.Z,...
+               'Udata', Quad.State.X_dot, 'Vdata', Quad.State.Y_dot, 'Wdata', Quad.State.Z_dot);
+           % Plot trajectory
+        plot3(Quad.State.X, Quad.State.Y, Quad.State.Z, '*r');
         drawnow
+        
+        % Record video.
+        frame = getframe(gcf);
+        writeVideo(v,frame);
     end
 end
+
+close(v);
+
+%%
+
+

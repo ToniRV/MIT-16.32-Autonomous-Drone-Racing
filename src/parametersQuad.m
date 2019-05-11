@@ -181,12 +181,12 @@ Quad.r_KI_lim = 10*(2*pi/360);  % Error to start calculating integral
 
 %% State Limits
 % Absolute Pose [m]
-Quad.X_min = -10;
-Quad.X_max = 10;
-Quad.Y_min = -10;
-Quad.Y_max = 10;
-Quad.Z_min = -10;
-Quad.Z_max = 10;
+Quad.X_min = -5;
+Quad.X_max = 5;
+Quad.Y_min = -5;
+Quad.Y_max = 5;
+Quad.Z_min = -5;
+Quad.Z_max = 5;
 
 % Linear Velocity [m/s]
 Quad.X_dot_min = -10;

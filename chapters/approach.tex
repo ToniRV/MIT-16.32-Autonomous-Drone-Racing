@@ -321,7 +321,9 @@ Although the nonlinear function $f$ may depend explicitly on time $t$, the drone
 the racetrack is constructed in a piecewise fashion using phases, where each phase spans from one gate to the next one.
 Therefore, we consider as many phases as there are gates in the racetrack.
 
-\textbf{Bounds:} to simulate a realistic drone we must constraint the control inputs to a range of possible values.
+\subsection{Bounds} 
+
+In order to simulate a realistic drone we must constraint the control inputs to a range of possible values.
 \begin{itemize}
   \item Input Bounds: generic input constraints can be formulated as: 
   $$M_{i}^{-} \leq U_{i}(t) \leq M_{i}^{+},$$
@@ -331,7 +333,7 @@ Therefore, we consider as many phases as there are gates in the racetrack.
   With a variable pitch propeller, one may expect the thrust to be negative as well.
   The upper bound is calculated as $4 k \omega_{\text{max}}^{2}$, where $k$ is the lift constant and $\omega_{\text{max}}$ is the maximum motor speed.
   For $U_2, U_3$ upper and lower bounds we use $\pm 4 k l \omega_{\text{max}}^{2}$, where $l$ is the quadrotor's arm length.
-  Similarly, for the yaw component $U_4$, we use  $\pm 2 k l \omega_{\text{max}}^{2}$.
+  Similarly, for the yaw component $U_4$, we use  $\pm 2 b \omega_{\text{max}}^{2}$, where $b$ is the drag constant.
   \begin{table}[htbp]
     \center
     \begin{tabular}{|c|c|c|c|}
@@ -347,25 +349,41 @@ Therefore, we consider as many phases as there are gates in the racetrack.
     \caption{Constraints on control inputs.}
     \label{tab:control_bounds}
   \end{table}
-%  Quad.U1_max = 43.5;   % Quad.KT*4*Quad.max_motor_speed^2
-%Quad.U1_min = 0;      %
-%Quad.U2_max = 6.25;  % Quad.KT*Quad.l*Quad.max_motor_speed^2
-%Quad.U2_min = -6.25; % Quad.KT*Quad.l*Quad.max_motor_speed^2
-%Quad.U3_max = 6.25;  % Quad.KT*Quad.l*Quad.max_motor_speed^2
-%Quad.U3_min = -6.25; % Quad.KT*Quad.l*Quad.max_motor_speed^2
-%Quad.U4_max = 2.25; % Quad.Kd*2*Quad.max_motor_speed^2
-%Quad.U4_min = -2.25;% Quad.Kd*2*Quad.max_motor_speed^2
 
-  \item State Constraints: 
+  \item State Bounds: we also bound the state space as detailed in \cref{tab:state_bounds}.
+
+  \begin{table}[htbp]
+    \center
+    \begin{tabular}{|c|c|c|c|}
+      \hline 
+      State & Definition & $M_i^{-}$ & $M_i^{+}$ \\
+      \hline 
+      {$[x, y, z]$} & {Absolute Position} & $-10$ & $10$ \\
+      {$[\dot{x}, \dot{y}, \dot{z}]$} & {Linear Speed} & $-10$ & $10$ \\
+      {$[\phi, \theta]$} & {Roll and Pitch} & $-\pi/2$ & $\pi/2$ \\
+      {$\psi$} & {Yaw} & $-\pi$ & $\pi$ \\
+      {$[p, q, r]$} & {Angular rate} & $-50(2\pi/360)$ & $50(2\pi/360)$\\
+      \hline
+    \end{tabular}
+    \caption{Constraints on control inputs.}
+    \label{tab:state_bounds}
+  \end{table}
+
+  \item Time Bounds: it is also necessary to specify the initial and final time bounds for each phase.
+  In our case, we only fix the initial time to $0$ for the first phase by setting its lower and upper bound to $0$ as well.
+  Conversely, final times are left free and given conservative lower and upper bounds.
+
+%  x_min = [Quad.X_min Quad.Y_min Quad.Z_min ...
+%  Quad.X_dot_min Quad.Y_dot_min Quad.Z_dot_min ...
+%  Quad.phi_min Quad.theta_min Quad.psi_min ...
+%  Quad.p_min Quad.q_min Quad.r_min ];
 
 \end{itemize}
 
 \textbf{Boundary Conditions:}
 
-Given 
-\begin{itemize}
-  \item Initial: $n(x(t_{0}), t_{0}) = 0$
-  \item Final: $m(x(t_{f}), t_{f}) = 0$
-\end{itemize}
+Initial conditions for the quadcopter at the start of the first phase are such that the quadcopter is at rest (no linear or angular velocities), and positioned at the first gate.
+For the rest of the phases, the initial conditions are set such that the drone is centered at the gate, with a small tolerance of $0.01m$, and with an arbitrary orientation.
+Similarly, both linear velocities and angular rates are left loosely bounded.
 
-\textbf{Initial Conditions}
+\subsection{Initial Guess}

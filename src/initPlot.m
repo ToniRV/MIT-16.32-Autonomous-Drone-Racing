@@ -5,8 +5,10 @@
 % Cambridge, MA
 % May 1, 2018
 
-function initPlot()
+function initPlot(axis_limits)
 % initPlot This function initializes the plots
+% axis sets the axis limits, given as [x_min, x_max, y_min, y_max, z_min,
+% z_max]
 f = figure('DefaultAxesFontSize', 16);
 f.Name = '3D Drone Visualization';
 
@@ -49,7 +51,7 @@ axis equal
 
 % pop1 = uicontrol('units','normalized','position',[.02 .15 .19 .07],'style','popupmenu','fontsize',13,'string',{'3D view';'Camera view'},'callback',@view1,'value',1);
 
- axis([-5 5 -5 5 0 5])
+axis(axis_limits)
 %axis([-2 2 -2 2 -2 2]);
 view(30,10)
 grid on
