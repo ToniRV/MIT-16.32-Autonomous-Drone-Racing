@@ -63,7 +63,7 @@ max_pos = max_pos + state_tol;
 min_pos = min_pos - state_tol;
 
 %% 
-gates = generateGates(); % Currently does not use parsed gates...
+gates = generateGates(gates_data); % Currently does not use parsed gates...
 
 %%
 N_phases = length(gates) - 1;
@@ -73,12 +73,12 @@ N_states = length(fieldnames(Quad.State));
 auxdata.gates = gates;
 auxdata.N_phases = N_phases;
                                     
-x_min = [Quad.X_min Quad.Y_min Quad.Z_min ...
+x_min = [min_pos ...
          Quad.X_dot_min Quad.Y_dot_min Quad.Z_dot_min ...
          Quad.phi_min Quad.theta_min Quad.psi_min ...
          Quad.p_min Quad.q_min Quad.r_min ];
 
-x_max = [Quad.X_max Quad.Y_max Quad.Z_max ...
+x_max = [max_pos ...
          Quad.X_dot_max Quad.Y_dot_max Quad.Z_dot_max ...
          Quad.phi_max Quad.theta_max Quad.psi_max ...
          Quad.p_max Quad.q_max Quad.r_max ];
@@ -189,9 +189,9 @@ plotControls(N_phases, solution, Quad);
 
 %% Initialize the plot
 hold off;
-axis_limits = [Quad.X_min Quad.X_max ...
-               Quad.Y_min Quad.Y_max ...
-               Quad.Z_min Quad.Z_max];
+axis_limits = [min_pos(1) max_pos(1) ...
+               min_pos(2) max_pos(2) ...
+               min_pos(3) max_pos(3)];
 initPlot(axis_limits);
 plotQuadModel;
 plotGates(gates);
@@ -201,7 +201,7 @@ plotVelocityCones(gates);
 h = quiver3(0,0,0,0,0,0);
 
 % Setup video recording
-axis tight manual 
+%axis tight manual 
 record_video = 0;
 if record_video == 1
     set(gca,'nextplot','replacechildren'); 
@@ -249,7 +249,7 @@ end
 scatter3(acc_state_x,acc_state_y,acc_state_z,10,acc_time, 'LineWidth', 5)
 colorbar
 
-hold off;
+hold off
 
 if record_video == 1
     close(v);

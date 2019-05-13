@@ -1,4 +1,4 @@
-function gates = generateGates()
+function gates = generateGates(gates_data)
 %GENERATEGATES generates a vector of gates.
 
     u_hover = [13.7, 0, 0, 0];
@@ -7,8 +7,8 @@ function gates = generateGates()
     % This one is particular as we set the drone to start with 0
     % velocity.
     % Drone states:
-    gates(1).normal      = normalize([0, 0, 1], 'norm');
-    gates(1).position    = zeros(1, 3);
+    gates(1).normal      = normalize(gates_data(1).normal, 'norm');
+    gates(1).position    = gates_data(1).position;
     gates(1).velocity    = zeros(1, 3);
 
     gates(1).guess_time = 0;
@@ -16,8 +16,8 @@ function gates = generateGates()
     gates(1).guess_control = u_hover;
 
     %% GATE 2
-    gates(2).normal      = normalize([0, 1, 1], 'norm');
-    gates(2).position    = [-1, 1, 1];
+    gates(2).normal      = normalize(gates_data(2).normal, 'norm');
+    gates(2).position    = gates_data(2).position;
     gates(2).velocity    = gates(2).normal;
 
     gates(2).guess_time = 1;
@@ -26,15 +26,15 @@ function gates = generateGates()
 
     
     %% GATE 3
-    gates(3).normal      = normalize([1, 1, 0], 'norm');
-    gates(3).position    = [1, 2, 2];
+    gates(3).normal      = normalize(gates_data(3).normal, 'norm');
+    gates(3).position    = gates_data(3).position;
     gates(3).velocity    = gates(3).normal;
 
     gates(3).guess_time = 2;
 
     gates(3).guess_control = u_hover;
     
-
+    %{
     %% GATE 4
     gates(4).normal      = normalize([0, 0, -1], 'norm');
     gates(4).position    = [1, 3, 1];
@@ -82,7 +82,7 @@ function gates = generateGates()
         % This must be actually set smartly!
         gates(g).orientation_tol  = pi/2; % NOT SURE psi is pi to -pi
         gates(g).spin_tol         = 50*(2*pi/360); % angular velocity
-        gates(g).vel_normal_tol   = 0.80; % Bound for dot prod of velocity direction to gate's normal
+        gates(g).vel_normal_tol   = 0.8; % Bound for dot prod of velocity direction to gate's normal
 
         gates(g).time_min   = 0;
         gates(g).time_max   = gates(g).time_tol;
@@ -106,8 +106,8 @@ function gates = generateGates()
     gates(1).time_max   = 0;
 
     % Fixed initial state for starting gate to zero.
-    gates(1).state_min   = zeros(1, 12);
-    gates(1).state_max   = zeros(1, 12);
+    gates(1).state_min   = [gates(1).position, gates(1).velocity, gates(1).orientation, gates(1).spin];
+    gates(1).state_max   = [gates(1).position, gates(1).velocity, gates(1).orientation, gates(1).spin];
 end
 
 

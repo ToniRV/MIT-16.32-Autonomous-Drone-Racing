@@ -20,7 +20,7 @@ function [gates, max_pos, min_pos] = parseGatePositions()
     min_pos = inf * ones(1,3);
     for k = 1:numel(fn)
         % Get gate's position.
-        gates(k).position = mean(X.(fn{k}).nominal_location) / 100;
+        gates(k).position = mean(X.(fn{k}).nominal_location);
         
         % Find min and max gates positions to setup state bounds later.
         for i = 1:length(gates(k).position)
