@@ -176,7 +176,10 @@ solution = output.result.solution;
 save('GPOPS_DroneRace_solution');
 
 %% Reload Gpops
-load('GPOPS_DroneRace_solution');
+load('GPOPS_DroneRace_solution_6_flightgoggles_gates');
+
+%% Save to YAML file
+YAML.write('GPOPS_DroneRace_solution.yaml', solution);
 
 %%
 %-------------------------------------------------------------------------%
