@@ -86,6 +86,8 @@ x_max = [max_pos ...
 u_min = [Quad.U1_min Quad.U2_min Quad.U3_min Quad.U4_min];
 u_max = [Quad.U1_max Quad.U2_max Quad.U3_max Quad.U4_max];
 
+max_quad_velocity = norm([Quad.X_dot_max, Quad.Y_dot_max, Quad.Z_dot_max]);
+
 for p = 1:N_phases
     %% Time
     % Fixed initial time for all phases...
@@ -118,8 +120,8 @@ for p = 1:N_phases
     if p < N_phases
         % We have a +1 to account for time, and the last component is to
         % force the drone to traverse the gate
-        bounds.eventgroup(p).lower = [zeros(1, N_states + 1), gates(p).vel_normal_tol]; 
-        bounds.eventgroup(p).upper = [zeros(1, N_states + 1), 1.0];
+        bounds.eventgroup(p).lower = [zeros(1, N_states + 1), gates(p).vel_direction_tol, gates(p).vel_norm_tol]; 
+        bounds.eventgroup(p).upper = [zeros(1, N_states + 1), 1.0, max_quad_velocity];
     end
 end
 
@@ -243,6 +245,13 @@ for p = 1:N_phases
             writeVideo(v,frame);
         end
     end
+    quad_velocity = [Quad.State.X_dot, Quad.State.Y_dot, Quad.State.Z_dot];
+    quad_velocity_norm = norm(quad_velocity);
+    quad_velocity_unit_vector = quad_velocity / quad_velocity_norm;
+    quad_velocity_on_gate_normal = dot(quad_velocity_unit_vector,...
+                                      gates(p).normal)
+                                  gates(p).normal
+                                  quad_velocity_unit_vector
 end
 
 

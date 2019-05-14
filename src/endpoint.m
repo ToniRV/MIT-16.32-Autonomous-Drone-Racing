@@ -17,6 +17,7 @@ if N_phases > 1
     for p = 1:N_phases
         % Collect per phase initial/final Time and States
         % Time
+        
         t0{p} = input.phase(p).initialtime;
         tf{p} = input.phase(p).finaltime;
         % States
@@ -26,10 +27,14 @@ if N_phases > 1
 
     for p = 1:N_phases - 1
         % Eventgroups
+        quad_velocity_norm = norm(xf{p}(4:6));
+        quad_velocity_unit_vector = xf{p}(4:6) / quad_velocity_norm;
+        quad_velocity_on_gate_normal = dot(quad_velocity_unit_vector,...
+                                          gates(p+1).normal)
         output.eventgroup(p).event = [xf{p} - x0{p+1},...
                                       tf{p} - t0{p+1},...
-                                      dot(normalize(xf{p}(4:6), 'norm'),...
-                                          gates(p).normal)];
+                                      quad_velocity_on_gate_normal,...
+                                          quad_velocity_norm];
     end
 end
     

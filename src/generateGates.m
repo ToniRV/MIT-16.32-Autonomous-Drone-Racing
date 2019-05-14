@@ -23,7 +23,7 @@ function gates = generateGates(gates_data)
     gates(2).guess_time = 1;
 
     gates(2).guess_control = u_hover;
-
+    
     
     %% GATE 3
     gates(3).normal      = normalize(gates_data(3).normal, 'norm');
@@ -82,7 +82,8 @@ function gates = generateGates(gates_data)
         % This must be actually set smartly!
         gates(g).orientation_tol  = pi/2; % NOT SURE psi is pi to -pi
         gates(g).spin_tol         = 50*(2*pi/360); % angular velocity
-        gates(g).vel_normal_tol   = 0.8; % Bound for dot prod of velocity direction to gate's normal
+        gates(g).vel_direction_tol   = 0.8; % Bound for dot prod of velocity direction to gate's normal
+        gates(g).vel_norm_tol        = 9; % Lower bound for norm of velocity at gate's position for proper gate traversal
 
         gates(g).time_min   = 0;
         gates(g).time_max   = gates(g).time_tol;

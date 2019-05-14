@@ -10,7 +10,7 @@ function plotVelocityCones(gates)
     
    for g = 1:length(gates)
         X2 = gates(g).position + gates(g).normal;
-        r=[0 tan(acos(gates(g).vel_normal_tol))];
+        r=[0 tan(acos(gates(g).vel_direction_tol))];
         
         [Cone, ~, ~] = plotCone(gates(g).position, X2, r, n, cyl_color, closed, lines);
         set(Cone,'FaceAlpha', alpha)
