@@ -216,6 +216,7 @@ acc_state_x = [0];
 acc_state_y = [0];
 acc_state_z = [0];
 acc_time = [0];
+pause(4)
 for p = 1:N_phases
     for idx = 1:size(solution.phase(p).state, 1)
         % Convert solution state to list of Quad.State
@@ -245,13 +246,6 @@ for p = 1:N_phases
             writeVideo(v,frame);
         end
     end
-    quad_velocity = [Quad.State.X_dot, Quad.State.Y_dot, Quad.State.Z_dot];
-    quad_velocity_norm = norm(quad_velocity);
-    quad_velocity_unit_vector = quad_velocity / quad_velocity_norm;
-    quad_velocity_on_gate_normal = dot(quad_velocity_unit_vector,...
-                                      gates(p).normal)
-                                  gates(p).normal
-                                  quad_velocity_unit_vector
 end
 
 

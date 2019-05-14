@@ -34,7 +34,7 @@ function gates = generateGates(gates_data)
 
     gates(3).guess_control = u_hover;
     
-    %{
+
     %% GATE 4
     gates(4).normal      = normalize([0, 0, -1], 'norm');
     gates(4).position    = [1, 3, 1];
