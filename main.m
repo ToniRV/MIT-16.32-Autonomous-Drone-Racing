@@ -176,10 +176,7 @@ solution = output.result.solution;
 save('GPOPS_DroneRace_solution');
 
 %% Reload Gpops
-load('GPOPS_DroneRace_solution_6_flightgoggles_gates');
-
-%% Save to YAML file
-YAML.write('GPOPS_DroneRace_solution.yaml', solution);
+load('GPOPS_DroneRace_solution');
 
 %%
 %-------------------------------------------------------------------------%
@@ -215,11 +212,13 @@ if record_video == 1
 end
 
 % Accumulate states.
-acc_state_x = [0];
-acc_state_y = [0];
-acc_state_z = [0];
-acc_time = [0];
-pause(4)
+acc_state_x = [];
+acc_state_y = [];
+acc_state_z = [];
+acc_state_phi = [];
+acc_state_theta = [];
+acc_state_psi = [];
+acc_time = [];
 for p = 1:N_phases
     for idx = 1:size(solution.phase(p).state, 1)
         % Convert solution state to list of Quad.State
@@ -241,6 +240,9 @@ for p = 1:N_phases
         acc_state_x = [acc_state_x, Quad.State.X];
         acc_state_y = [acc_state_y, Quad.State.Y];
         acc_state_z = [acc_state_z, Quad.State.Z];
+        acc_state_phi = [acc_state_phi, Quad.State.phi];
+        acc_state_theta = [acc_state_theta, Quad.State.theta];
+        acc_state_psi = [acc_state_psi, Quad.State.psi];
         acc_time = [acc_time, solution.phase(p).time(idx)];
         
         % Record video.
@@ -251,7 +253,6 @@ for p = 1:N_phases
     end
 end
 
-
 scatter3(acc_state_x,acc_state_y,acc_state_z,10,acc_time, 'LineWidth', 5)
 colorbar
 
@@ -260,6 +261,12 @@ hold off
 if record_video == 1
     close(v);
 end
+
+%% Save to YAML file
+% time, position, orientation
+trajectory = [acc_time', acc_state_x', acc_state_y', acc_state_z',...
+    acc_state_phi', acc_state_theta', acc_state_psi'];
+YAML.write('GPOPS_DroneRace_solution.yaml', trajectory);
 
 %%
 
