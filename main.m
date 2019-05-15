@@ -225,7 +225,7 @@ for p = 1:N_phases
         Quad.State = vectorToState(solution.phase(p).state(idx, :));
 
         % Convert solution control to list of Quad.Control
-        Quad.Control = vectorToControl(solution.phase(p).control(idx, :));
+        %Quad.Control = vectorToControl(solution.phase(p).control(idx, :));
         
         % Plot Quad
         plotQuad
@@ -259,6 +259,8 @@ colorbar
 hold off
 
 if record_video == 1
+    frame = getframe(gcf);
+    writeVideo(v,frame);
     close(v);
 end
 
