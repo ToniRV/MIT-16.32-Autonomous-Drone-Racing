@@ -2,7 +2,7 @@
 
 Optimal control and trajectory estimation of a nonlinear model of a Quadcopter.
 
-Report available here: [report](main.pdf)
+Report available here: [report](FinalReport.pdf)
 
 ## Minimum Time Optimal Control Problem
 
