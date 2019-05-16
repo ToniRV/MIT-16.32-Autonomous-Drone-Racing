@@ -22,6 +22,6 @@ A common behaviour in human drone races is to orient the onboard camera of the d
 Nevertheless, in our work, we did not set explicit path constraints that would enforce the orientation of the drone to be aligned with the velocity vector.
 Therefore, as seen in the video below, the orientation of the camera is not accounted in the optimization:
 
-![](gpops_viz.gif)
+https://youtu.be/zyDAMC3OjAY
 
 ![](peaks.gif)
