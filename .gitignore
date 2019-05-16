@@ -1,6 +1,9 @@
 # Matlab temporary files
 *.m~
 
+# Mac stuff
+.DS_Store
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
