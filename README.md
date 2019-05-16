@@ -1,4 +1,4 @@
-# Project for MIT 16.32 Principles of Optimal Control and Estimation
+# MIT 16.32 Project: Principles of Optimal Control and Estimation
 
 Optimal control and trajectory estimation of a nonlinear model of a Quadcopter.
 
