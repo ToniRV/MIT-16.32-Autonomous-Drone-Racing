@@ -5,6 +5,7 @@ Class project for MIT's Principles of Optimal Control and Estimation (16.32).
 Optimal control and trajectory estimation of a nonlinear model of a Quadcopter.
 
 -[Report](FinalReport.pdf)
+
 -[Presentation](presentation.pptx)
 
 ## Minimum Time Optimal Control Problem
