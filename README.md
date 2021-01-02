@@ -1,9 +1,11 @@
-# MIT 16.32 Project: Principles of Optimal Control and Estimation
+# MIT 16.32 Autonomous Drone Racing
+
+Class project for MIT's Principles of Optimal Control and Estimation (16.32).
 
 Optimal control and trajectory estimation of a nonlinear model of a Quadcopter.
 
-Report available here: [report](FinalReport.pdf)
-Presentation here: [presentation](presentation.pptx)
+-[Report](FinalReport.pdf)
+-[Presentation](presentation.pptx)
 
 ## Minimum Time Optimal Control Problem
 
